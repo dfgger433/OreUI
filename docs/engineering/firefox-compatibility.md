@@ -13,8 +13,9 @@ Last updated: 2026-10-22
 - Secondary constraint: preserve existing Chrome/Chromium rendering and behavior.
 - The scrollbar thumb-size clamp is implemented in the current source tree and
   was exercised in Firefox Developer Edition 159.0b5 on 2026-10-22 with a
-  reproducible Marionette run. The run measured a normal overlay and a short
-  host, and all six recorded assertions passed. Evidence remains limited to the
+  reproducible Marionette run. The run covered two-axis clamp, programmatic
+  scroll synchronization, real End/Home keys, pointer capture and dragging,
+  destroy/native fallback, and reinitialization. Evidence remains limited to the
   cases listed under "Not verified".
 
 ## Verified mechanics in the current tree
@@ -22,15 +23,15 @@ Last updated: 2026-10-22
 The component is untranspiled TypeScript plus CSS under `src/components/scrollbar/`.
 All statements below refer to that working tree, not to a published package.
 
-Browser evidence is narrower than the code-reading statements below. The only
-execution evidence in this record is the reproducible Marionette run documented
+Browser evidence is narrower than the code-reading statements below. The
+first recorded execution evidence is the reproducible Marionette run documented
 under "Firefox reproducible evidence (2026-10-22)" below: Firefox Developer
 Edition 159.0b5 driven by direct four-element Marionette framing, with a
-fixture that loaded the checked-in `dist` CSS and module. Earlier attempts
-mentioned in this document's history were withdrawn because they retained no
-artifact or numeric measurement. The run does not cover pointer drag, keyboard,
-native-fallback restoration, RTL/zoom, Chromium visual regression, or console
-output.
+fixture that loaded built `dist` CSS and module artifacts. The separate
+interaction run is documented under "Firefox interaction evidence" below.
+Earlier attempts mentioned in this document's history were withdrawn because
+they retained no artifact or numeric measurement. The first run does not cover RTL/zoom or console output. The separate Chromium regression evidence below covers the native path and
+keyboard behavior, but not pixel-level visual parity.
 
 | Area                   | Verified behavior                                                                                                                                                                                                                                                                                                                                               | Source                                                                                                                                           |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -50,25 +51,24 @@ output.
 ## Not verified
 
 - No automated cross-browser test suite for this component exists in the
-  repository. The 2026-10-22 Marionette run below is the only execution evidence
-  recorded here; the other statements are code reading, not execution results.
+  repository. The recorded Marionette runs below are targeted execution
+  evidence, not full component coverage; the other statements are code reading.
 - No version matrix for Firefox Developer Edition, Firefox stable, Chrome, or
   Safari. Do not publish version ranges or "supported" labels without testing.
 - Unverified interaction cases: page zoom, RTL, touch dragging, nested or
   horizontal-only containers, high-contrast and reduced-motion settings,
   very large content, and drag behavior during layout changes.
-- Not verified in Firefox Developer Edition: native-scrollbar restoration after
-  removing the controller, pointer dragging, keyboard scrolling, wheel-driven
-  synchronization, visual comparison with Chromium, zoom/RTL/layout-change
-  behavior, and the Chromium regression pass. Console output was not examined.
+- Not verified in Firefox Developer Edition: visual comparison with Chromium,
+  zoom/RTL/layout-change behavior, and console output. The Chromium regression
+  check below did not compare pixel-level visual parity.
 
 ## Firefox reproducible evidence (2026-10-22)
 
 Environment and method: Firefox Developer Edition 159.0b5, headless, driven
 directly over Marionette with four-element framing. The fixture was served from
-`%TEMP%` and loaded the checked-in `dist` CSS and module; no repository files
-were modified for the run. `results.json` records branch `firefox` at commit
-`4de7c30`.
+`%TEMP%` and loaded built `dist` CSS and module artifacts; no repository files
+were modified for the run. The retained first-run measurements record branch
+`firefox` at commit `4de7c30`.
 
 Measurements for the vertical overlay:
 
@@ -95,10 +95,10 @@ track.
 
 ### Evidence folder and rerun
 
-Stable evidence folder (run date 2026-10-22):
-`%TEMP%\oreui-ff-evidence-final-20261022-111815\`. It contains `results.json`,
-the raw Marionette run log `firefox.log`, the screenshot
-`firefox-short-host.png`, and the rerun script `run-firefox-test.mjs`. The
+The first-run temporary folder (run date 2026-10-22) was
+`%TEMP%\oreui-ff-evidence-final-20261022-111815\`. Its retained measurements
+and screenshot supplied the normal/short-track results above. Its
+`firefox.log` is a launch log only, not a raw Marionette transcript. The
 screenshot SHA-256 is
 `d9268910ff0bde05d870331fc086acd2e928fdf70d357283d3a77888c539746b`.
 
@@ -113,17 +113,71 @@ The script hard-codes the repository, Firefox executable, and profile paths
 recorded in `results.json`, starts its own fixture server on a free loopback
 port, and fails when any assertion is false.
 
+## Firefox interaction evidence (2026-10-22)
+
+A separate headless Marionette run against Firefox Developer Edition 159.0b5
+loaded built `dist` CSS and module artifacts and exercised the controller's
+interaction paths. The sanitized result and two small screenshots are kept in
+[`evidence/firefox/`](evidence/firefox/); the rerun script is
+[`repro.py`](evidence/firefox/repro.py). The script uses `OREUI_REPO`,
+`OREUI_FIREFOX`, `OREUI_COMMIT`, and `OREUI_MARIONETTE_PORT` environment
+variables for local paths and does not copy a browser profile.
+
+- Two-axis clamp: at a 20 × 20 viewport, the vertical track/thumb measured 4 / 4
+  px and the horizontal track/thumb 8 / 8 px, so neither thumb exceeded its
+  track and travel did not become negative. In `clamp-20x20.png`, the 20 × 20
+  control is the small region at the upper-left; the screenshot is not a
+  magnified visual comparison.
+- Scroll synchronization: programmatic midpoint `[160, 155]` produced
+  `translateY(25px)` and `translateX(53.76px)`; the end position was `[320, 310]`
+  with `translateY(50px)` and `translateX(107.52px)`, and scroll events were
+  observed.
+- Keyboard: real WebDriver End from `[0, 0]` reached `[0, 310]`, and Home from
+  `[320, 310]` reached `[320, 0]`; both follow the source API's vertical-first
+  behavior.
+- Pointer drag: vertical drag reached scrollTop 248 with `translateY(40px)`;
+  horizontal drag reached scrollLeft 148.15 with `translateX(49.7784px)`.
+  `gotpointercapture` and captured pointer moves were observed on both thumbs.
+- Lifecycle: destroy removed the initialized marker and overlay tracks while the
+  native scrollbar was restored; reinit recreated the overlay.
+
+This is execution evidence for the listed fixture cases only, not a general
+Firefox support claim. The compact summary is
+[`interaction-result.json`](evidence/firefox/interaction-result.json).
+
+## Chromium regression evidence (2026-10-22)
+
+A targeted Edge 155 headless run exercised the native Chromium path. Its
+sanitized JSON is [`chromium-regression.json`](evidence/firefox/chromium-regression.json).
+It recorded `CSS.supports("-moz-appearance", "none") === false`, zero overlay
+nodes, retained native `::-webkit-scrollbar*` track/thumb rules, and automatic
+native `scrollbarWidth`/`scrollbarColor`. Real keyboard End reached `top=680`
+(`maxTop=680`), and Home returned `top=0`. This is a native-path and keyboard
+regression check, not a pixel-level visual parity comparison.
+
+## Documentation build verification (2026-10-22)
+
+`pnpm docs:typecheck` and `pnpm docs:build` passed. The build generated 296/296
+static pages and completed final optimization. `docs/source.config.ts` uses
+`remarkImageOptions.external = false`, which disables build-time size probing
+for all remote Markdown images; local images remain handled locally, and the
+browser still loads each remote image URL. The build still logged retries for
+OG routes and Google Fonts connection timeouts, but completed successfully.
+
 ## Migration log
 
 Append entries; do not rewrite history. An entry is only "Verified" when the
 checklist below was run on the named browser build.
 
-| Date       | Area                       | Change                                                                                                                                                    | Verification                            | Notes                                                                                                                                                                                                                                      |
-| ---------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 2026-10-22 | Scrollbar docs             | Documented the Firefox overlay gates and the native `scrollbar-color` fallback in the English and Chinese Scrollbar pages; added this engineering record. | Docs review only                        | No source change. Changelog entry is documentation-only.                                                                                                                                                                                   |
-| 2026-10-22 | Firefox overlay source     | The existing overlay implementation is present in the working tree.                                                                                       | Code reading only                       | Browser verification remains incomplete.                                                                                                                                                                                                   |
-| 2026-10-22 | Scrollbar thumb sizing fix | Clamp vertical and horizontal thumb lengths so neither exceeds its track, preventing negative travel.                                                     | Firefox automated evidence (Marionette) | Short track is 12 × 14, below the configured 24 px minimum, and the thumb clamps to 12 × 14. Normal and short programmatic scroll both reached max with the thumb at the track end. Pointer drag, keyboard, and console remain unverified. |
-| 2026-10-22 | Firefox evidence record    | Replaced the earlier smoke-only statements with the reproducible Marionette measurements, screenshots, and assertions.                                    | Evidence run + docs review              | Evidence folder `%TEMP%\oreui-ff-evidence-final-20261022-111815\` (not a repo artifact); screenshot SHA-256 `d9268910ff0bde05d870331fc086acd2e928fdf70d357283d3a77888c539746b`.                                                            |
+| Date       | Area                         | Change                                                                                                                                                         | Verification                            | Notes                                                                                                                         |
+| ---------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-22 | Scrollbar docs               | Documented the Firefox overlay gates and the native `scrollbar-color` fallback in the English and Chinese Scrollbar pages; added this engineering record.      | Docs review only                        | No source change. Changelog entry is documentation-only.                                                                      |
+| 2026-10-22 | Firefox overlay source       | The existing overlay implementation is present in the working tree.                                                                                            | Code reading only                       | Browser verification remains incomplete outside the fixture cases recorded below.                                             |
+| 2026-10-22 | Scrollbar thumb sizing fix   | Clamp vertical and horizontal thumb lengths so neither exceeds its track, preventing negative travel.                                                          | Firefox automated evidence (Marionette) | Two-axis 20 × 20 case measured V 4/4 and H 8/8 track/thumb; programmatic scroll sync also reached the measured endpoints.     |
+| 2026-10-22 | Firefox interaction evidence | Recorded scroll sync, vertical-first End/Home, pointer capture/drag, destroy/native fallback, and reinit behavior with a sanitized result and two screenshots. | Firefox automated evidence (Marionette) | V drag: scrollTop 248, translateY 40; H drag: scrollLeft 148.15, translateX 49.7784. Remaining browser gaps are listed above. |
+| 2026-10-22 | Firefox evidence record      | Replaced the earlier smoke-only statements with reproducible Marionette measurements and repository evidence artifacts.                                        | Evidence run + docs review              | See [`evidence/firefox/`](evidence/firefox/); no browser profile was copied.                                                  |
+| 2026-10-22 | Chromium regression          | Checked the native Chromium path and vertical-first keyboard End/Home behavior in Edge 155 headless.                                                           | Chromium automated evidence             | Overlay count 0; native pseudo-element rules retained; pixel-level visual parity was not compared.                            |
+| 2026-10-22 | Documentation build          | Disabled remote Markdown image size probing with `remarkImageOptions.external = false`; retained remote image URLs in browser output.                          | `docs:typecheck` and `docs:build`       | 296/296 static pages generated; OG and Google Fonts requests retried but build completed successfully.                        |
 
 ## Manual verification checklist
 
@@ -136,9 +190,14 @@ Firefox Developer Edition:
       both gates true, `scrollbar-width: none`, track visible, 12 × 496 track.
 - [ ] The overlay track/thumb match the Chromium pixel layout. Visual comparison
       with Chromium was not run.
-- [ ] Wheel, keyboard, and pointer drag keep the thumb and content in sync.
-- [ ] Removing the controller import restores a native scrollbar styled by
-      `scrollbar-color`, with no orphaned overlay nodes.
+- [ ] Wheel keeps the thumb and content in sync. Programmatic scroll sync is
+      verified below; real wheel input was not run.
+- [x] Keyboard and pointer drag keep the thumb and content in sync. Real End /
+      Home and both-axis pointer capture/drag are recorded in the interaction
+      evidence.
+- [x] Destroying the controller restores a native scrollbar styled by
+      `scrollbar-color`, with no orphaned overlay nodes. Destroy/reinit evidence
+      records native fallback and overlay recreation.
 - [ ] Vertical and horizontal overflow, both together, and neither.
 - [x] Short-track clamp: after the host is resized to a short track, the thumb
       length never exceeds the track. Verified: 12 × 14 track, below the
@@ -151,7 +210,10 @@ Firefox Developer Edition:
 
 Chrome/Chromium (regression):
 
-- [ ] `::-webkit-scrollbar*` rendering is unchanged from the pre-task build.
-- [ ] No overlay nodes are created (`CSS.supports("-moz-appearance", "none")`
-      is false).
-- [ ] Keyboard and tabindex behavior is unchanged.
+- [x] Native `::-webkit-scrollbar*` rules remain present and the native path
+      retains automatic `scrollbarWidth`/`scrollbarColor`; pixel-level visual
+      parity was not compared.
+- [x] No overlay nodes are created (`CSS.supports("-moz-appearance", "none")`
+      is false); Edge 155 headless measured overlay count 0.
+- [x] Real keyboard End reaches `top=680`/`maxTop=680`, and Home returns
+      `top=0`; broader tabindex coverage remains unverified.

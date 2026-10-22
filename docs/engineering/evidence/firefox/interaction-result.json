@@ -1,0 +1,68 @@
+{
+  "source": "Marionette interaction run",
+  "firefoxDeveloperEdition": "159.0b5",
+  "firefoxBrowserVersion": "159.0",
+  "commit": "4de7c304451bf6fbd444d3bf4d8f19b0a07021e1",
+  "nodeSyntaxCheck": "passed",
+  "checks": {
+    "twoAxisClamp": {
+      "viewport": [20, 20],
+      "verticalTrack": 4,
+      "verticalThumb": 4,
+      "horizontalTrack": 8,
+      "horizontalThumb": 8,
+      "negativeTravelAvoided": true
+    },
+    "scrollSync": {
+      "midpointScroll": [160, 155],
+      "midpointTransforms": ["translateY(25px)", "translateX(53.76px)"],
+      "endScroll": [320, 310],
+      "endTransforms": ["translateY(50px)", "translateX(107.52px)"],
+      "scrollEventsObserved": true
+    },
+    "keyboard": {
+      "end": {
+        "before": [0, 0],
+        "after": [0, 310],
+        "axisPriority": "vertical"
+      },
+      "home": {
+        "before": [320, 310],
+        "after": [320, 0],
+        "axisPriority": "vertical"
+      }
+    },
+    "pointerDrag": {
+      "vertical": {
+        "scrollAfter": [0, 248],
+        "transform": "translateY(40px)",
+        "pointerCapture": true
+      },
+      "horizontal": {
+        "scrollAfter": [148.15, 0],
+        "transform": "translateX(49.7784px)",
+        "pointerCapture": true
+      }
+    },
+    "destroyAndReinit": {
+      "destroy": {
+        "initialized": false,
+        "overlayTracks": false,
+        "nativeScrollbar": true
+      },
+      "reinit": {
+        "initialized": true,
+        "overlayTracks": true
+      }
+    }
+  },
+  "artifacts": {
+    "screenshots": ["clamp-20x20.png", "pointer-drag-vertical.png"],
+    "rerunScript": "repro.py"
+  },
+  "limitations": [
+    "No Chromium visual regression comparison",
+    "No RTL, zoom, or layout-change coverage",
+    "No console-output assertion"
+  ]
+}

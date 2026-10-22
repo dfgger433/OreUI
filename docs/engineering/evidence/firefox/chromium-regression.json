@@ -1,0 +1,30 @@
+{
+  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0",
+  "firefoxCustomSupported": false,
+  "overlayCount": 0,
+  "nativeVerticalThumbRule": "\n  min-height: var(--ore-scrollbar-thumb-min-size);\n  border-radius: 0;\n  background:\n    linear-gradient(\n        var(--ore-scrollbar-thumb-background),\n        var(--ore-scrollbar-thumb-background)\n      )\n      center calc(var(--ore-scrollbar-unit) * 2) /\n      calc(100% - var(--ore-scrollbar-unit) * 4)\n      calc(100% - var(--ore-scrollbar-unit) * 6) no-repeat,\n    linear-gradient(\n        var(--ore-scrollbar-thumb-shadow),\n        var(--ore-scrollbar-thumb-shadow)\n      )\n      center bottom var(--ore-scrollbar-unit) /\n      calc(100% - var(--ore-scrollbar-unit) * 2)\n      calc(var(--ore-scrollbar-unit) * 2) no-repeat,\n    linear-gradient(\n        var(--ore-scrollbar-thumb-highlight),\n        var(--ore-scrollbar-thumb-highlight)\n      )\n      center var(--ore-scrollbar-unit) /\n      calc(100% - var(--ore-scrollbar-unit) * 2)\n      calc(100% - var(--ore-scrollbar-unit) * 4) no-repeat,\n    var(--ore-scrollbar-thumb-border);\n",
+  "nativeVerticalTrackRule": "\n  background: linear-gradient(\n      var(--ore-scrollbar-track),\n      var(--ore-scrollbar-track)\n    )\n    center / var(--ore-scrollbar-track-size) 100% no-repeat;\n",
+  "nativeScrollbarWidth": "auto",
+  "nativeScrollbarColor": "auto",
+  "clientHeight": 120,
+  "scrollHeight": 800,
+  "keyboardEnd": {
+    "top": 680,
+    "left": 0,
+    "maxTop": 680,
+    "maxLeft": 320
+  },
+  "keyboardHome": {
+    "top": 0,
+    "left": 0
+  },
+  "checks": {
+    "firefoxCustomUnsupported": true,
+    "noOverlayNodes": true,
+    "nativeThumbMinSize": true,
+    "nativeThumbStyle": true,
+    "nativeTrackStyle": true,
+    "endReachesBottom": true,
+    "homeReturnsTop": true
+  }
+}

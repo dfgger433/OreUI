@@ -1,0 +1,50 @@
+{
+  "source": "Firefox documentation-page acceptance",
+  "browser": "Firefox Developer Edition 159.0b5",
+  "routes": [
+    {
+      "path": "/OreUI/",
+      "status": 200,
+      "displayed": true,
+      "hydrated": true,
+      "jsErrors": 0,
+      "react418": 0,
+      "scrollbar": { "initialized": 0, "overlayTracks": 0 },
+      "dropdownOpened": true
+    },
+    {
+      "path": "/OreUI/docs/navigation/scrollbar/",
+      "status": 200,
+      "displayed": true,
+      "hydrated": true,
+      "jsErrors": 0,
+      "react418": 0,
+      "scrollbar": { "initialized": 1, "overlayTracks": 2 },
+      "dropdownOpened": null
+    },
+    {
+      "path": "/OreUI/docs/controls/dropdown/",
+      "status": 200,
+      "displayed": true,
+      "hydrated": true,
+      "jsErrors": 0,
+      "react418": 0,
+      "scrollbar": { "initialized": 0, "overlayTracks": 0 },
+      "dropdownOpened": true
+    }
+  ],
+  "assertions": {
+    "http200": true,
+    "displayedAndHydrated": true,
+    "scrollbarMarkerAndTracks": true,
+    "dropdownOpens": true,
+    "noJavaScriptErrors": true,
+    "noReact418": true
+  },
+  "limitations": [
+    "Three targeted real pages only; not a whole-site acceptance claim.",
+    "React SSR/hydration-specific coverage remains a separate follow-up.",
+    "Other framework wrappers and broader browser hydration matrices remain unverified."
+  ],
+  "screenshot": "page-2-scrollbar.png"
+}

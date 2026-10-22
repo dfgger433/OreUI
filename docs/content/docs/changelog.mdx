@@ -11,6 +11,7 @@ icon: RotateCcwClock
 #### Fixed
 
 - Scrollbar: clamp vertical and horizontal overlay thumbs to their track length on short tracks, preventing negative travel.
+- Framework Scrollbar: move controller initialization and cleanup into wrapper mount lifecycles to avoid the known SSR hydration mismatch path; targeted acceptance passed on three real documentation pages and the recorded React SSR lifecycle paths. Solid callback refs also receive the mounted `HTMLElement`; other framework and broader hydration coverage remains pending.
 
 #### Documentation
 

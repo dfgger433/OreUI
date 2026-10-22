@@ -1,0 +1,68 @@
+{
+  "source": "Firefox SSR and lifecycle acceptance",
+  "browser": "Firefox Developer Edition 159.0b5",
+  "scope": {
+    "react": {
+      "ssrBeforeHydration": {
+        "marker": false,
+        "tracks": 0,
+        "style": false,
+        "childText": "SSR child"
+      },
+      "hydrate": {
+        "refSame": true,
+        "marker": true,
+        "tracks": 2,
+        "attributesPreserved": true,
+        "childTextPreserved": true,
+        "errors": []
+      },
+      "unmount": {
+        "marker": false,
+        "tracks": 0,
+        "styleCleared": true,
+        "refCurrent": null
+      },
+      "remount": {
+        "marker": true,
+        "tracks": 2,
+        "refSame": true,
+        "childText": "SSR child",
+        "errors": []
+      },
+      "clientUnmount": {
+        "htmlEmpty": true,
+        "tracks": 0
+      }
+    },
+    "vanilla": {
+      "existing": {
+        "marker": true,
+        "tracks": 2
+      },
+      "dynamic": {
+        "marker": true,
+        "tracks": 2
+      },
+      "removed": {
+        "elementPresent": false
+      }
+    }
+  },
+  "assertions": {
+    "reactHydrationPreservesAttributesAndText": true,
+    "reactHydrationRefSame": true,
+    "reactTracksAfterHydration": 2,
+    "reactUnmountCleansState": true,
+    "reactRemountHasNoDuplicateTracks": true,
+    "vanillaExistingAndDynamicInitialize": true,
+    "vanillaRemovedElementCleansUp": true,
+    "errors": []
+  },
+  "limitations": [
+    "Child node identity was not independently verified.",
+    "The excluded harness child-identity assertion compared firstElementChild after the controller prepended its track; its false value is not treated as a component failure.",
+    "Pure-import browser no-mutation and detached-observer cleanup were not tested.",
+    "Other framework wrappers and broader browser hydration matrices remain outside this evidence."
+  ]
+}

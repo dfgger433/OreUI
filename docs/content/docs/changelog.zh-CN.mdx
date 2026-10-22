@@ -11,6 +11,7 @@ icon: RotateCcwClock
 #### 修复
 
 - Scrollbar：将短轨道上的垂直和水平覆盖层滑块限制在轨道长度内，避免产生负的可移动距离。
+- Framework Scrollbar：将 controller 的初始化和清理移入各框架 wrapper 的挂载生命周期，避开已知的 SSR hydration 不一致路径；三个真实文档页和已记录的 React SSR 生命周期路径定向验收已通过，Solid callback ref 也能收到挂载后的 `HTMLElement`，但其他框架和更广泛的 hydration 覆盖仍待完成。
 
 #### 文档
 

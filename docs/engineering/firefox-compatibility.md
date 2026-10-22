@@ -18,35 +18,30 @@ Last updated: 2026-10-22
   destroy/native fallback, and reinitialization. Evidence remains limited to the
   cases listed under "Not verified".
 
-## Verified mechanics in the current tree
+## Current implementation map
 
-The component is untranspiled TypeScript plus CSS under `src/components/scrollbar/`.
-All statements below refer to that working tree, not to a published package.
+The current source separates the scrollbar controller from the Vanilla automatic
+entry point. The controller owns overlay creation, sizing, scroll synchronization,
+keyboard handling, pointer capture/dragging, and teardown:
 
-Browser evidence is narrower than the code-reading statements below. The
-first recorded execution evidence is the reproducible Marionette run documented
-under "Firefox reproducible evidence (2026-10-22)" below: Firefox Developer
-Edition 159.0b5 driven by direct four-element Marionette framing, with a
-fixture that loaded built `dist` CSS and module artifacts. The separate
-interaction run is documented under "Firefox interaction evidence" below.
-Earlier attempts mentioned in this document's history were withdrawn because
-they retained no artifact or numeric measurement. The first run does not cover RTL/zoom or console output. The separate Chromium regression evidence below covers the native path and
-keyboard behavior, but not pixel-level visual parity.
+- Controller: [`scrollbar-controller.ts`](../../src/components/scrollbar-controller/scrollbar-controller.ts)
+- Vanilla automatic entry: [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts)
+- Shared CSS and Firefox/Chromium feature gates: [`scrollbar.css`](../../src/components/scrollbar/scrollbar.css)
 
-| Area                   | Verified behavior                                                                                                                                                                                                                                                                                                                                               | Source                                                                                                                                           |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Native container       | `.ore-scrollbar` is a real overflow container (`overflow: auto`); wheel, touch, and scroll position stay on it.                                                                                                                                                                                                                                                 | [`scrollbar.css`](../../src/components/scrollbar/scrollbar.css#L19-L21)                                                                          |
-| Chromium/Safari path   | `::-webkit-scrollbar*` rules style the native scrollbar with the layered track/thumb gradients outside any Firefox-only feature query.                                                                                                                                                                                                                          | [`scrollbar.css`](../../src/components/scrollbar/scrollbar.css#L124-L209)                                                                        |
-| Firefox gate (CSS)     | Overlay rules are inside `@supports (scrollbar-color: red blue) and (-moz-appearance: none)`. Engines without `-moz-appearance` do not enter the block, so the Chromium/Safari fallback path is untouched.                                                                                                                                                      | [`scrollbar.css`](../../src/components/scrollbar/scrollbar.css#L23-L122)                                                                         |
-| Firefox gate (JS)      | The controller creates an overlay only when `CSS.supports("-moz-appearance", "none")` returns true.                                                                                                                                                                                                                                                             | [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts#L25-L27)                                                                            |
-| Native fallback        | Without the controller, the initialized-state rules are absent, so Firefox keeps a native scrollbar with `scrollbar-color` mapped to `--ore-scrollbar-thumb-background` and `--ore-scrollbar-track`.                                                                                                                                                            | [`scrollbar.css`](../../src/components/scrollbar/scrollbar.css#L23-L28)                                                                          |
-| Overlay DOM            | Two tracks are inserted (`vertical` prepended, `horizontal` appended), each containing an absolutely positioned thumb; tracks and thumbs are `aria-hidden`.                                                                                                                                                                                                     | [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts#L29-L62)                                                                            |
-| Overlay layout         | On initialization the container becomes `position: relative`, native colors become transparent, `scrollbar-width: none` hides the native bar, tracks use `position: sticky` and `pointer-events: none`, thumbs use `pointer-events: auto`.                                                                                                                      | [`scrollbar.css`](../../src/components/scrollbar/scrollbar.css#L30-L121)                                                                         |
-| Sizing                 | Track sizes come from `clientHeight`/`clientWidth` plus the CSS variables, and exclude the perpendicular track when overflow exists; thumbs use a minimum size and proportional length, clamped to the track length to prevent negative travel. Track sizes are published as `--ore-scrollbar-vertical-track-size` and `--ore-scrollbar-horizontal-track-size`. | [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts#L75-L139)                                                                           |
-| Position sync          | Passive `scroll`, `ResizeObserver`, and `MutationObserver` update thumb transforms; an initial microtask sync covers first paint.                                                                                                                                                                                                                               | [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts#L311-L355)                                                                          |
-| Pointer dragging       | Pointer down/move/up/cancel on the thumb use `setPointerCapture`, `preventDefault`, and direct `scrollTop`/`scrollLeft` updates.                                                                                                                                                                                                                                | [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts#L183-L266)                                                                          |
-| Keyboard and tabindex  | Overflowing regions receive `tabindex="0"`, non-overflowing regions `tabindex="-1"`, authored `tabindex` is preserved, and Arrow/Page/Home/End handling applies only when the region itself has focus.                                                                                                                                                          | [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts#L137-L155), [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts#L268-L309) |
-| Teardown and auto-init | Track nodes, style properties, listeners, and observers are removed on destroy; module import initializes existing and later-added `.ore-scrollbar` elements.                                                                                                                                                                                                   | [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts#L357-L419)                                                                          |
+The React, Vue, Svelte, and Solid wrappers now initialize the controller from
+their mount lifecycle and destroy it during unmount. This avoids mutating the
+server-rendered subtree before hydration:
+
+- React: [`scrollbar.ts`](../../packages/react/src/components/scrollbar.ts)
+- Vue: [`scrollbar.ts`](../../packages/vue/src/components/scrollbar.ts)
+- Svelte: [`scrollbar.svelte`](../../packages/svelte/src/components/scrollbar.svelte)
+- Solid: [`scrollbar.tsx`](../../packages/solid/src/components/scrollbar.tsx)
+
+The controller still uses the Firefox `CSS.supports("-moz-appearance", "none")`
+gate and the CSS `@supports` gate described by the Scrollbar page. The current
+build/typecheck pass and targeted lifecycle evidence cover the listed paths;
+React SSR-specific evidence is recorded below. Do not treat this architecture
+record as full component or site-wide acceptance.
 
 ## Not verified
 
@@ -203,29 +198,55 @@ for all remote Markdown images; local images remain handled locally, and the
 browser still loads each remote image URL. The build still logged retries for
 OG routes and Google Fonts connection timeouts, but completed successfully.
 
-A separate real-page smoke check sampled three documentation pages: each
-returned HTTP 200, displayed, and hydrated; the dropdown interaction also opened
-successfully. The Scrollbar documentation page currently triggers React #418
-when the component is inserted before hydration; its root cause is under review.
-This check therefore does not support a claim that the whole documentation site
-is error-free.
+A separate real-page acceptance check passed on three targeted pages: each
+returned HTTP 200, displayed, and hydrated; the Scrollbar page had one
+initialized marker and two overlay tracks; the dropdown interaction opened; and
+JavaScript errors and React #418 counts were both zero. The compact result and
+full-site screenshot are [`docs-page-results.json`](evidence/firefox/docs-page-results.json)
+and [`page-2-scrollbar.png`](evidence/firefox/page-2-scrollbar.png).
+This is limited to these three pages and is not a whole-site error-free claim.
+
+## SSR and hydration fix record (three-page acceptance)
+
+React #418 was traced to the wrapper/automatic-entry split: the old automatic
+Vanilla entry could insert controller-owned overlay nodes into a server-rendered
+`.ore-scrollbar` subtree before the framework hydrated it. The current change
+keeps the controller in `src/components/scrollbar-controller/scrollbar-controller.ts`,
+leaves automatic discovery in the Vanilla-only
+`src/components/scrollbar/scrollbar.ts` entry, and moves the React, Vue, Svelte,
+and Solid wrappers to mount lifecycle initialization with unmount cleanup.
+
+Core build/typecheck, `docs:typecheck`, and `docs:build` have passed. The three
+listed real documentation pages also passed HTTP 200, display/hydration,
+Scrollbar initialization, and dropdown assertions with zero JavaScript errors
+and zero React #418 observations. The React SSR lifecycle run also passed the
+listed hydration, ref, unmount, remount, and cleanup checks; its compact result
+is [`ssr-lifecycle-results.json`](evidence/firefox/ssr-lifecycle-results.json).
+This acceptance remains limited to the listed paths: child identity was not
+independently verified, pure-import/detached-observer cases were not tested, and
+broader browser hydration matrices remain pending. Solid callback-ref forwarding
+was separately checked in Edge: direct and JSX variable-style callback refs were
+called once with an `HTMLElement`; object-ref support and lifecycle assertions
+were not claimed.
 
 ## Migration log
 
 Append entries; do not rewrite history. An entry is only "Verified" when the
 checklist below was run on the named browser build.
 
-| Date       | Area                         | Change                                                                                                                                                         | Verification                            | Notes                                                                                                                              |
-| ---------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-22 | Scrollbar docs               | Documented the Firefox overlay gates and the native `scrollbar-color` fallback in the English and Chinese Scrollbar pages; added this engineering record.      | Docs review only                        | No source change. Changelog entry is documentation-only.                                                                           |
-| 2026-10-22 | Firefox overlay source       | The existing overlay implementation is present in the working tree.                                                                                            | Code reading only                       | Browser verification remains incomplete outside the fixture cases recorded below.                                                  |
-| 2026-10-22 | Scrollbar thumb sizing fix   | Clamp vertical and horizontal thumb lengths so neither exceeds its track, preventing negative travel.                                                          | Firefox automated evidence (Marionette) | Two-axis 20 × 20 case measured V 4/4 and H 8/8 track/thumb; programmatic scroll sync also reached the measured endpoints.          |
-| 2026-10-22 | Firefox interaction evidence | Recorded scroll sync, vertical-first End/Home, pointer capture/drag, destroy/native fallback, and reinit behavior with a sanitized result and two screenshots. | Firefox automated evidence (Marionette) | V drag: scrollTop 248, translateY 40; H drag: scrollLeft 148.15, translateX 49.7784. Remaining browser gaps are listed above.      |
-| 2026-10-22 | Firefox evidence record      | Replaced the earlier smoke-only statements with reproducible Marionette measurements and repository evidence artifacts.                                        | Evidence run + docs review              | See [`evidence/firefox/`](evidence/firefox/); no browser profile was copied.                                                       |
-| 2026-10-22 | Chromium regression          | Checked the native Chromium path and vertical-first keyboard End/Home behavior in Edge 155 headless.                                                           | Chromium automated evidence             | Overlay count 0; native pseudo-element rules retained; pixel-level visual parity was not compared.                                 |
-| 2026-10-22 | Documentation build          | Disabled remote Markdown image size probing with `remarkImageOptions.external = false`; retained remote image URLs in browser output.                          | `docs:typecheck` and `docs:build`       | 296/296 static pages generated; OG and Google Fonts requests retried but build completed successfully.                             |
-| 2026-10-22 | Firefox component suite      | Recorded the targeted Firefox component acceptance suite with 14 PASS and 0 FAIL, plus a compact result, fixture, and screenshot.                              | Firefox automated evidence (Marionette) | Coverage and method limitations are recorded above; no profile, raw protocol log, or larger runner copied.                         |
-| 2026-10-22 | Documentation page smoke     | Sampled three real documentation pages: HTTP 200, visible/hydrated output, and successful dropdown open.                                                       | Real-page browser smoke check           | Scrollbar documentation page currently triggers React #418 before hydration; root cause under review, so no site-wide clean claim. |
+| Date       | Area                          | Change                                                                                                                                                         | Verification                            | Notes                                                                                                                                                               |
+| ---------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-22 | Scrollbar docs                | Documented the Firefox overlay gates and the native `scrollbar-color` fallback in the English and Chinese Scrollbar pages; added this engineering record.      | Docs review only                        | No source change. Changelog entry is documentation-only.                                                                                                            |
+| 2026-10-22 | Firefox overlay source        | The existing overlay implementation is present in the working tree.                                                                                            | Code reading only                       | Browser verification remains incomplete outside the fixture cases recorded below.                                                                                   |
+| 2026-10-22 | Scrollbar thumb sizing fix    | Clamp vertical and horizontal thumb lengths so neither exceeds its track, preventing negative travel.                                                          | Firefox automated evidence (Marionette) | Two-axis 20 × 20 case measured V 4/4 and H 8/8 track/thumb; programmatic scroll sync also reached the measured endpoints.                                           |
+| 2026-10-22 | Firefox interaction evidence  | Recorded scroll sync, vertical-first End/Home, pointer capture/drag, destroy/native fallback, and reinit behavior with a sanitized result and two screenshots. | Firefox automated evidence (Marionette) | V drag: scrollTop 248, translateY 40; H drag: scrollLeft 148.15, translateX 49.7784. Remaining browser gaps are listed above.                                       |
+| 2026-10-22 | Firefox evidence record       | Replaced the earlier smoke-only statements with reproducible Marionette measurements and repository evidence artifacts.                                        | Evidence run + docs review              | See [`evidence/firefox/`](evidence/firefox/); no browser profile was copied.                                                                                        |
+| 2026-10-22 | Chromium regression           | Checked the native Chromium path and vertical-first keyboard End/Home behavior in Edge 155 headless.                                                           | Chromium automated evidence             | Overlay count 0; native pseudo-element rules retained; pixel-level visual parity was not compared.                                                                  |
+| 2026-10-22 | Documentation build           | Disabled remote Markdown image size probing with `remarkImageOptions.external = false`; retained remote image URLs in browser output.                          | `docs:typecheck` and `docs:build`       | 296/296 static pages generated; OG and Google Fonts requests retried but build completed successfully.                                                              |
+| 2026-10-22 | Firefox component suite       | Recorded the targeted Firefox component acceptance suite with 14 PASS and 0 FAIL, plus a compact result, fixture, and screenshot.                              | Firefox automated evidence (Marionette) | Coverage and method limitations are recorded above; no profile, raw protocol log, or larger runner copied.                                                          |
+| 2026-10-22 | Documentation page acceptance | Three targeted real pages passed HTTP 200, display/hydration, Scrollbar marker/tracks, dropdown open, and zero JavaScript/React #418 errors.                   | Real-page Firefox acceptance            | Limited to three pages; other framework and broader hydration coverage remain pending.                                                                              |
+| 2026-10-22 | React SSR lifecycle           | React SSR hydration preserved wrapper attributes/text and ref identity; unmount cleared controller state; remount recreated exactly two tracks.                | Firefox automated evidence (Marionette) | See [`ssr-lifecycle-results.json`](evidence/firefox/ssr-lifecycle-results.json); child identity, pure-import mutation, and detached-observer cleanup were excluded. |
+| 2026-10-22 | Solid callback refs           | Direct and JSX variable-style callback refs were each called once with an `HTMLElement` after the wrapper explicitly captured the element.                     | Edge callback-ref harness               | Object-ref support and temporary stub lifecycle assertions were not claimed.                                                                                        |
 
 ## Manual verification checklist
 

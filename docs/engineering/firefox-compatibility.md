@@ -11,13 +11,29 @@ Last updated: 2026-10-22
 - Primary target: Firefox Developer Edition.
 - Secondary constraint: preserve existing Chrome/Chromium rendering and behavior.
 - The scrollbar thumb-size clamp is implemented in the current source tree.
-  Browser verification is limited to the DOM smoke test recorded below; this
-  record does not claim Firefox compatibility is fully verified.
+  Browser evidence is limited to the in-memory visual smoke observation
+  recorded below: no screenshot was retained and no numeric sizes were
+  measured, so this record does not claim Firefox compatibility is verified.
 
 ## Verified mechanics in the current tree
 
 The component is untranspiled TypeScript plus CSS under `src/components/scrollbar/`.
 All statements below refer to that working tree, not to a published package.
+
+Browser evidence is narrower than the code-reading statements below. Two
+automation paths were attempted on 2026-10-22 and both proved unstable: a
+Marionette DOM evaluation and a Playwright persistent launch that timed out
+after 180 s; the headless fallback produced no screenshot. The fixture was
+served at `http://127.0.0.1:8765/index.html` from a temporary directory under
+`%TEMP%`, loading the real `dist` CSS and module; the server has since been shut
+down. What remains confirmable is only the in-memory observation in Firefox
+Developer Edition: the CSS and JavaScript `-moz-appearance` gates both evaluate
+true, the controller initializes the scrollbar overlay, and the custom track is
+displayed. No screenshot artifact was retained, and no numeric measurement,
+short-track bound, scroll synchronization, drag, keyboard, or console result is
+verified. An earlier version of this record carried a numeric track/thumb table;
+those numbers are withdrawn here because no artifact retained for this session
+supports them.
 
 | Area                   | Verified behavior                                                                                                                                                                                                                                                                                                                                               | Source                                                                                                                                           |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -37,8 +53,8 @@ All statements below refer to that working tree, not to a published package.
 ## Not verified
 
 - No automated cross-browser tests for this component were found in the
-  repository. Apart from the 2026-10-22 DOM smoke test below, the statements
-  above are code reading, not execution results.
+  repository. Apart from the 2026-10-22 visual smoke observation below, the
+  statements above are code reading, not execution results.
 - No version matrix for Firefox Developer Edition, Firefox stable, Chrome, or
   Safari. Do not publish version ranges or "supported" labels without testing.
 - Unverified interaction cases: page zoom, RTL, touch dragging, nested or
@@ -47,47 +63,42 @@ All statements below refer to that working tree, not to a published package.
 - Not verified in Firefox Developer Edition: native-scrollbar restoration after
   removing the controller, pointer dragging, keyboard scrolling, normal
   scroll-position synchronization, visual comparison with Chromium,
-  zoom/RTL/layout-change behavior, and the Chromium regression pass. The DOM
-  smoke test below did not exercise any of these.
+  zoom/RTL/layout-change behavior, and the Chromium regression pass. The visual
+  smoke observation below did not exercise any of these.
 
-## Firefox DOM smoke test (2026-10-22)
+## Firefox visual smoke observation (2026-10-22)
 
-Environment: Firefox Developer Edition 159.0b5, native Marionette DOM
-evaluation. Fixture: temporary page under `%TEMP%`, not added to the
-repository; no repository files were modified. The page used a 240x120
-viewport with 480x600 content, then the host was resized to 20x20 to force a
-short track.
+Environment: Firefox Developer Edition 159.0b5. Fixture: temporary page under
+`%TEMP%` served at `http://127.0.0.1:8765/index.html`, loading the real `dist`
+CSS and module; it was not added to the repository, no repository files were
+modified, and the local server has since been shut down.
 
-Checks and measurements, in CSS pixels:
+Observed in memory only:
 
-| Check                                             | Result                                     |
-| ------------------------------------------------- | ------------------------------------------ |
-| `CSS.supports("-moz-appearance", "none")`         | `true`                                     |
-| `.ore-scrollbar` initialized state                | `data-ore-initialized="scrollbar"` present |
-| 240x120 host: vertical track / thumb              | 12x104 / 12x24                             |
-| 240x120 host: horizontal track / thumb            | 228x16 / 114x16                            |
-| 20x20 host after resize: vertical track / thumb   | 12x4 / 12x4                                |
-| 20x20 host after resize: horizontal track / thumb | 8x16 / 8x16                                |
+- `CSS.supports("scrollbar-color: red blue")` and
+  `CSS.supports("-moz-appearance", "none")` both returned true.
+- The controller initialized the overlay on `.ore-scrollbar`.
+- The custom track and thumb elements were displayed.
 
-Established by this test: the controller initializes the overlay in Firefox,
-the `-moz-appearance` gate evaluates true, and after the resize the thumb
-length equals, and never exceeds, the short track length on both axes.
+Not observed or not retained:
 
-Not established: pointer dragging, keyboard scrolling, scroll-position
-synchronization during normal scrolling, visual/pixel comparison with
-Chromium, native-fallback restoration, zoom/RTL behavior, and Chromium
-regression. No screenshots or interaction events were captured.
+- No screenshot artifact was kept and no numeric track/thumb sizes were
+  recorded; the short-track clamp bound is not verified.
+- Scroll-position synchronization, pointer dragging, keyboard scrolling, and
+  console output were not checked.
+- Native-fallback restoration, visual/pixel comparison with Chromium, zoom/RTL
+  behavior, and the Chromium regression pass remain pending.
 
 ## Migration log
 
 Append entries; do not rewrite history. An entry is only "Verified" when the
 checklist below was run on the named browser build.
 
-| Date       | Area                       | Change                                                                                                                                                    | Verification      | Notes                                                                                                                                                                                  |
-| ---------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-22 | Scrollbar docs             | Documented the Firefox overlay gates and the native `scrollbar-color` fallback in the English and Chinese Scrollbar pages; added this engineering record. | Docs review only  | No source change. Changelog entry is documentation-only.                                                                                                                               |
-| 2026-10-22 | Firefox overlay source     | The existing overlay implementation is present in the working tree.                                                                                       | Code reading only | Browser verification remains incomplete.                                                                                                                                               |
-| 2026-10-22 | Scrollbar thumb sizing fix | Clamp vertical and horizontal thumb lengths so neither exceeds its track, preventing negative travel.                                                     | Firefox DOM smoke | Firefox Dev Edition 159.0b5 via native Marionette: initialization and short-track clamp measured at 240x120 and 20x20. Drag, visual comparison, and Chromium regression still pending. |
+| Date       | Area                       | Change                                                                                                                                                    | Verification                                      | Notes                                                                                                                      |
+| ---------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-22 | Scrollbar docs             | Documented the Firefox overlay gates and the native `scrollbar-color` fallback in the English and Chinese Scrollbar pages; added this engineering record. | Docs review only                                  | No source change. Changelog entry is documentation-only.                                                                   |
+| 2026-10-22 | Firefox overlay source     | The existing overlay implementation is present in the working tree.                                                                                       | Code reading only                                 | Browser verification remains incomplete.                                                                                   |
+| 2026-10-22 | Scrollbar thumb sizing fix | Clamp vertical and horizontal thumb lengths so neither exceeds its track, preventing negative travel.                                                     | Firefox visual smoke (in-memory observation only) | No screenshot artifact retained and no numeric size evidence. Scroll sync, drag, keyboard, and console results unverified. |
 
 ## Manual verification checklist
 
@@ -101,9 +112,9 @@ Firefox Developer Edition:
 - [ ] Removing the controller import restores a native scrollbar styled by
       `scrollbar-color`, with no orphaned overlay nodes.
 - [ ] Vertical and horizontal overflow, both together, and neither.
-- [x] Short-track clamp: after resizing the host to 20x20, the thumb length
-      never exceeds the track (vertical track/thumb 12x4/12x4, horizontal
-      8x16/8x16), as measured by the DOM smoke test above.
+- [ ] Short-track clamp: after the host is resized to a short track, the thumb
+      length never exceeds the track. Pending numeric size check; no size
+      evidence is recorded in this document.
 - [ ] RTL, zoom, and a container resized after initialization.
 
 Chrome/Chromium (regression):

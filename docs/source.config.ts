@@ -14,4 +14,10 @@ export const docs = defineDocs({
   },
 });
 
-export default defineConfig();
+export default defineConfig({
+  mdxOptions: {
+    remarkImageOptions: {
+      external: false,
+    },
+  },
+});

@@ -114,6 +114,10 @@ Apply `.ore-scrollbar` to a real overflow container. Wheel scrolling, touch iner
 
 Chromium and Safari use `::-webkit-scrollbar*` to reproduce the layered pixel thumb. Firefox does not expose the required thumb and track pseudo-elements, so the controller hides its native scrollbar and overlays the same track and thumb layers while keeping the real element as the scroll container. The overlay mirrors native scroll position and pointer dragging. Without the controller, Firefox falls back to `scrollbar-color` and its native scrollbar.
 
+## Firefox
+
+Firefox Developer Edition is the primary verification target for the overlay. The stylesheet applies the overlay only when `-moz-appearance: none` and `scrollbar-color` are supported, and the controller creates the overlay only when `CSS.supports("-moz-appearance", "none")` is true. Without the controller, Firefox keeps its native scrollbar and applies `scrollbar-color` from the component variables. The `::-webkit-scrollbar*` path for Chromium and Safari is unaffected.
+
 ## CSS variables
 
 | Variable                           | Purpose                     |

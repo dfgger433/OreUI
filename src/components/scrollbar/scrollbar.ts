@@ -114,9 +114,12 @@ function syncCustomScrollbar(
   );
 
   if (hasVertical) {
-    const thumbSize = Math.max(
-      thumbMinSize,
-      (verticalTrackSize * scrollbar.clientHeight) / scrollbar.scrollHeight,
+    const thumbSize = Math.min(
+      verticalTrackSize,
+      Math.max(
+        thumbMinSize,
+        (verticalTrackSize * scrollbar.clientHeight) / scrollbar.scrollHeight,
+      ),
     );
     const travel = verticalTrackSize - thumbSize;
     customScrollbar.verticalThumb.style.height = `${thumbSize}px`;
@@ -124,9 +127,12 @@ function syncCustomScrollbar(
   }
 
   if (hasHorizontal) {
-    const thumbSize = Math.max(
-      thumbMinSize,
-      (horizontalTrackSize * scrollbar.clientWidth) / scrollbar.scrollWidth,
+    const thumbSize = Math.min(
+      horizontalTrackSize,
+      Math.max(
+        thumbMinSize,
+        (horizontalTrackSize * scrollbar.clientWidth) / scrollbar.scrollWidth,
+      ),
     );
     const travel = horizontalTrackSize - thumbSize;
     customScrollbar.horizontalThumb.style.width = `${thumbSize}px`;

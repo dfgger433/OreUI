@@ -113,6 +113,10 @@ export function ScrollableContent() {
 
 Chromium 和 Safari 使用 `::-webkit-scrollbar*` 复刻分层像素滑块。由于 Firefox 没有提供所需的 thumb 和 track 伪元素，controller 会隐藏其原生滚动条并覆盖同样的 track 和 thumb 分层，同时仍以真实元素作为滚动容器。覆盖层同步原生滚动位置和指针拖拽。未导入 controller 时，Firefox 使用 `scrollbar-color` 和原生滚动条作为 fallback。
 
+## Firefox
+
+Firefox Developer Edition 是覆盖层的主要验证目标。仅当浏览器支持 `-moz-appearance: none` 和 `scrollbar-color` 时，样式表才会应用覆盖层；仅当 `CSS.supports("-moz-appearance", "none")` 返回 true 时，controller 才会创建覆盖层。未导入 controller 时，Firefox 保留原生滚动条，并使用组件变量设置 `scrollbar-color`。Chromium 和 Safari 的 `::-webkit-scrollbar*` 路径不受影响。
+
 ## CSS 变量
 
 | 变量                               | 用途           |

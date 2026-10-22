@@ -29,7 +29,8 @@
   "license": "MPL-2.0",
   "sideEffects": [
     "**/*.css",
-    "dist/components/**/*.js"
+    "dist/components/**/*.js",
+    "!dist/components/scrollbar-controller/**/*.js"
   ],
   "files": [
     "dist",

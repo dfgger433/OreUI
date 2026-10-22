@@ -1,5 +1,6 @@
 <script lang="ts">
-  import "oreui-web/scrollbar";
+  import { onMount } from "svelte";
+  import { destroyScrollbar, initScrollbar } from "oreui-web/scrollbar-controller";
   import type { OreComponentProps } from "../types.js";
 
   export type ScrollbarProps = OreComponentProps<HTMLDivElement>;
@@ -10,6 +11,11 @@
   export function getElement(): HTMLDivElement {
     return element;
   }
+
+  onMount(() => {
+    initScrollbar(element);
+    return () => destroyScrollbar(element);
+  });
 </script>
 
 <div bind:this={element} class={`ore-scrollbar ${className ?? ""}`} {...props}>

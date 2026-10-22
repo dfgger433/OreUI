@@ -1,0 +1,86 @@
+{
+  "source": "Firefox component acceptance suite",
+  "browser": "Firefox Developer Edition 159.0b5",
+  "branch": "firefox",
+  "commit": "c95b65efd0303690f794fd4c4d92f4bbe293cb75",
+  "result": {
+    "passed": 14,
+    "failed": 0,
+    "success": true,
+    "pageErrors": [],
+    "failedRequests": [],
+    "deleteSession": "ok"
+  },
+  "features": [
+    {
+      "name": "CSS bundle, layout and representative assets",
+      "method": "Computed CSS + network resource requests"
+    },
+    {
+      "name": "Button click and loading spinner mask",
+      "method": "WebDriver ElementClick + computed pseudo-style"
+    },
+    {
+      "name": "Checkbox, radio, switch form participation and reset",
+      "method": "WebDriver ElementClick + native FormData/reset"
+    },
+    {
+      "name": "Horizontal and vertical slider keyboard/value fill",
+      "method": "WebDriver ElementSendKeys (ArrowRight)"
+    },
+    {
+      "name": "Native select and text inputs",
+      "method": "WebDriver ElementSendKeys + native events/validity"
+    },
+    {
+      "name": "Native details accordion disclosure",
+      "method": "WebDriver ElementClick + native toggle"
+    },
+    {
+      "name": "Dropdown open, keyboard selection, Escape and outside dismissal",
+      "method": "WebDriver ElementClick/ElementSendKeys"
+    },
+    {
+      "name": "Tooltip hover/focus open and Escape close",
+      "method": "WebDriver pointer/key actions; DOM focus() focus path"
+    },
+    {
+      "name": "Dialog showModal, Escape cancel and form close",
+      "method": "WebDriver ElementClick + PerformActions Escape"
+    },
+    {
+      "name": "Toast open/dismiss API, popover and live-region semantics",
+      "method": "Direct component API calls through Marionette ExecuteScript"
+    },
+    {
+      "name": "Tab/toggles selection and keyboard navigation",
+      "method": "WebDriver ElementClick/ElementSendKeys"
+    },
+    {
+      "name": "Table sorting state and event direction cycle",
+      "method": "WebDriver ElementClick"
+    },
+    {
+      "name": "MutationObserver initialization for dynamically mounted components",
+      "method": "DOM mount via ExecuteScript; observer-driven controller behavior"
+    },
+    {
+      "name": "Browser error and failed asset scan",
+      "method": "Collected window errors and HTTP request logs"
+    }
+  ],
+  "assets": {
+    "screenshot": "../components.png",
+    "fixture": "fixture.html",
+    "failedRequests": 0,
+    "pageErrors": 0,
+    "loadedFont": true,
+    "representativeAssetRequests": "icons and minecraft-regular.woff2 returned HTTP 200"
+  },
+  "limitations": [
+    "Toast was tested through its component API with auto-dismiss disabled (data-duration=0), not a user click path.",
+    "Tooltip focus was initiated with DOM focus(); Escape was sent through Marionette actions.",
+    "The suite is targeted component acceptance, not a complete cross-browser or visual-regression matrix.",
+    "The copied fixture is a page harness; the original profile, raw protocol log, absolute temp paths, and 44 KB runner were not copied."
+  ]
+}

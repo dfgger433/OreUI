@@ -145,6 +145,45 @@ This is execution evidence for the listed fixture cases only, not a general
 Firefox support claim. The compact summary is
 [`interaction-result.json`](evidence/firefox/interaction-result.json).
 
+## Firefox component suite evidence (2026-10-22)
+
+A separate Firefox Developer Edition 159.0b5 headless component suite recorded
+14 PASS and 0 FAIL against built `dist` artifacts. The compact result is
+[`component-suite/results.json`](evidence/firefox/component-suite/results.json),
+the small page fixture is [`fixture.html`](evidence/firefox/component-suite/fixture.html),
+and the final screenshot is [`components.png`](evidence/firefox/components.png).
+The original browser profile, raw Marionette log, and absolute temporary paths
+were not copied. The larger runner was also not copied; the fixture documents the
+component surface but is not a standalone rerun command.
+
+Coverage groups and methods:
+
+1. CSS bundle, layout, and representative assets: computed CSS, layout boxes,
+   and HTTP asset requests.
+2. Button click and loading spinner mask: WebDriver click and computed pseudo-style.
+3. Checkbox, radio, switch form participation and reset: WebDriver clicks,
+   native `FormData`, and native reset.
+4. Horizontal and vertical sliders: WebDriver ArrowRight and value/fill checks.
+5. Native select and text inputs: WebDriver keys, native events, and validity.
+6. Native details accordion disclosure: WebDriver click and native `toggle`.
+7. Dropdown: open, keyboard selection, Escape, and outside dismissal through
+   WebDriver click/key actions.
+8. Tooltip: hover/focus open and Escape close through pointer/key actions; the
+   focus path used DOM `focus()`.
+9. Dialog: `showModal`, Escape cancel, and form close through WebDriver actions.
+10. Toast: open/dismiss API, popover, and live-region semantics through
+    Marionette `ExecuteScript`; auto-dismiss was disabled with `data-duration=0`.
+11. Tabs/toggles: selection and keyboard navigation through WebDriver actions.
+12. Table: sort state and ascending/descending event cycle through WebDriver click.
+13. Dynamic components: post-mount `MutationObserver` initialization through
+    DOM insertion via `ExecuteScript`.
+14. Browser errors and assets: window error collection and HTTP request logs;
+    page errors and failed requests were both zero.
+
+This is targeted component acceptance evidence, not a claim that the full
+component suite or all browser configurations are supported. It does not replace
+RTL, zoom, visual-parity, accessibility-matrix, or broader cross-browser testing.
+
 ## Chromium regression evidence (2026-10-22)
 
 A targeted Edge 155 headless run exercised the native Chromium path. Its
@@ -164,20 +203,29 @@ for all remote Markdown images; local images remain handled locally, and the
 browser still loads each remote image URL. The build still logged retries for
 OG routes and Google Fonts connection timeouts, but completed successfully.
 
+A separate real-page smoke check sampled three documentation pages: each
+returned HTTP 200, displayed, and hydrated; the dropdown interaction also opened
+successfully. The Scrollbar documentation page currently triggers React #418
+when the component is inserted before hydration; its root cause is under review.
+This check therefore does not support a claim that the whole documentation site
+is error-free.
+
 ## Migration log
 
 Append entries; do not rewrite history. An entry is only "Verified" when the
 checklist below was run on the named browser build.
 
-| Date       | Area                         | Change                                                                                                                                                         | Verification                            | Notes                                                                                                                         |
-| ---------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| 2026-10-22 | Scrollbar docs               | Documented the Firefox overlay gates and the native `scrollbar-color` fallback in the English and Chinese Scrollbar pages; added this engineering record.      | Docs review only                        | No source change. Changelog entry is documentation-only.                                                                      |
-| 2026-10-22 | Firefox overlay source       | The existing overlay implementation is present in the working tree.                                                                                            | Code reading only                       | Browser verification remains incomplete outside the fixture cases recorded below.                                             |
-| 2026-10-22 | Scrollbar thumb sizing fix   | Clamp vertical and horizontal thumb lengths so neither exceeds its track, preventing negative travel.                                                          | Firefox automated evidence (Marionette) | Two-axis 20 × 20 case measured V 4/4 and H 8/8 track/thumb; programmatic scroll sync also reached the measured endpoints.     |
-| 2026-10-22 | Firefox interaction evidence | Recorded scroll sync, vertical-first End/Home, pointer capture/drag, destroy/native fallback, and reinit behavior with a sanitized result and two screenshots. | Firefox automated evidence (Marionette) | V drag: scrollTop 248, translateY 40; H drag: scrollLeft 148.15, translateX 49.7784. Remaining browser gaps are listed above. |
-| 2026-10-22 | Firefox evidence record      | Replaced the earlier smoke-only statements with reproducible Marionette measurements and repository evidence artifacts.                                        | Evidence run + docs review              | See [`evidence/firefox/`](evidence/firefox/); no browser profile was copied.                                                  |
-| 2026-10-22 | Chromium regression          | Checked the native Chromium path and vertical-first keyboard End/Home behavior in Edge 155 headless.                                                           | Chromium automated evidence             | Overlay count 0; native pseudo-element rules retained; pixel-level visual parity was not compared.                            |
-| 2026-10-22 | Documentation build          | Disabled remote Markdown image size probing with `remarkImageOptions.external = false`; retained remote image URLs in browser output.                          | `docs:typecheck` and `docs:build`       | 296/296 static pages generated; OG and Google Fonts requests retried but build completed successfully.                        |
+| Date       | Area                         | Change                                                                                                                                                         | Verification                            | Notes                                                                                                                              |
+| ---------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-22 | Scrollbar docs               | Documented the Firefox overlay gates and the native `scrollbar-color` fallback in the English and Chinese Scrollbar pages; added this engineering record.      | Docs review only                        | No source change. Changelog entry is documentation-only.                                                                           |
+| 2026-10-22 | Firefox overlay source       | The existing overlay implementation is present in the working tree.                                                                                            | Code reading only                       | Browser verification remains incomplete outside the fixture cases recorded below.                                                  |
+| 2026-10-22 | Scrollbar thumb sizing fix   | Clamp vertical and horizontal thumb lengths so neither exceeds its track, preventing negative travel.                                                          | Firefox automated evidence (Marionette) | Two-axis 20 × 20 case measured V 4/4 and H 8/8 track/thumb; programmatic scroll sync also reached the measured endpoints.          |
+| 2026-10-22 | Firefox interaction evidence | Recorded scroll sync, vertical-first End/Home, pointer capture/drag, destroy/native fallback, and reinit behavior with a sanitized result and two screenshots. | Firefox automated evidence (Marionette) | V drag: scrollTop 248, translateY 40; H drag: scrollLeft 148.15, translateX 49.7784. Remaining browser gaps are listed above.      |
+| 2026-10-22 | Firefox evidence record      | Replaced the earlier smoke-only statements with reproducible Marionette measurements and repository evidence artifacts.                                        | Evidence run + docs review              | See [`evidence/firefox/`](evidence/firefox/); no browser profile was copied.                                                       |
+| 2026-10-22 | Chromium regression          | Checked the native Chromium path and vertical-first keyboard End/Home behavior in Edge 155 headless.                                                           | Chromium automated evidence             | Overlay count 0; native pseudo-element rules retained; pixel-level visual parity was not compared.                                 |
+| 2026-10-22 | Documentation build          | Disabled remote Markdown image size probing with `remarkImageOptions.external = false`; retained remote image URLs in browser output.                          | `docs:typecheck` and `docs:build`       | 296/296 static pages generated; OG and Google Fonts requests retried but build completed successfully.                             |
+| 2026-10-22 | Firefox component suite      | Recorded the targeted Firefox component acceptance suite with 14 PASS and 0 FAIL, plus a compact result, fixture, and screenshot.                              | Firefox automated evidence (Marionette) | Coverage and method limitations are recorded above; no profile, raw protocol log, or larger runner copied.                         |
+| 2026-10-22 | Documentation page smoke     | Sampled three real documentation pages: HTTP 200, visible/hydrated output, and successful dropdown open.                                                       | Real-page browser smoke check           | Scrollbar documentation page currently triggers React #418 before hydration; root cause under review, so no site-wide clean claim. |
 
 ## Manual verification checklist
 

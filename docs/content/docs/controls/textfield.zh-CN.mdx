@@ -3,14 +3,8 @@ title: Textfield 文本框
 description: 输入和编辑文本
 ---
 
-import { TextfieldStory } from "@/components/stories/textfield.story";
-
-<TextfieldStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -29,116 +23,6 @@ import "oreui-web/styles.css";
   <span class="ore-textfield-description">Shown to other players</span>
 </div>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Textfield } from "@oreui-web/react/textfield";
-import { useState } from "react";
-
-export function WorldNameField() {
-  const [value, setValue] = useState("");
-
-  return (
-    <Textfield
-      name="world"
-      label="World name"
-      description="Shown to other players"
-      placeholder="New World"
-      value={value}
-      onInput={(event) => {
-        const field = event.target as HTMLElement & { value: string };
-        setValue(field.value);
-      }}
-    />
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Textfield } from "@oreui-web/vue/textfield";
-const value = ref("");
-</script>
-
-<template>
-  <Textfield
-    v-model="value"
-    name="world"
-    label="World name"
-    placeholder="New World"
-    description="Shown to other players"
-  />
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Textfield from "@oreui-web/svelte/textfield";
-
-  let value = $state("");
-</script>
-
-<Textfield
-  bind:value
-  name="world"
-  label="World name"
-  description="Shown to other players"
-  placeholder="New World"
-/>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { createSignal } from "solid-js";
-import { Textfield } from "@oreui-web/solid/textfield";
-
-export function WorldNameField() {
-  const [value, setValue] = createSignal("");
-
-  return (
-    <Textfield
-      value={value()}
-      onValueChange={setValue}
-      name="world"
-      label="World name"
-      description="Shown to other players"
-      placeholder="New World"
-    />
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<div class="ore-textfield">
-  <label class="ore-textfield-label" for="world">World name</label>
-  <span class="ore-textfield-control">
-    <input class="ore-textfield-input" id="world" name="world" placeholder="New World" />
-  </span>
-  <span class="ore-textfield-description">Shown to other players</span>
-</div>
-
-<script>
-	import "oreui-web/styles.css";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## 验证
 
@@ -178,7 +62,7 @@ export function WorldNameField() {
 
 原生 Textfield 使用 `<input>` 自带的 `input`、`change`、`focus`、`blur` 和表单事件。值就是输入元素原生的 `value`。
 
-React、Vue、Svelte 和 Solid 适配保持同样的原生行为，只增加适配框架的 API：React 转发`onInput` 和 `ref`，Vue 支持 `v-model`，Svelte 支持 `bind:value`，Solid 支持 `onValueChange`。
+请直接使用原生输入事件和属性。Vanilla 核心不添加包装器状态或框架专用事件名称。
 
 ## API
 
@@ -193,7 +77,7 @@ React、Vue、Svelte 和 Solid 适配保持同样的原生行为，只增加适�
 | `required`、`readonly`、`disabled`                        | 原生输入状态           |
 | `id`                                                      | 关联 label 和描述信息  |
 
-框架适配接受 `label`、`description` 和 `error`，用于生成对应的 Light DOM 元素。原生 HTML 使用者需要显式写出这些元素。
+原生 HTML 使用者需要显式写出 label、description 和 error 等 Light DOM 元素。
 
 ## 公开类
 

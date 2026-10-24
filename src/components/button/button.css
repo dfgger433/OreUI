@@ -111,13 +111,13 @@
   color: var(--ore-button-foreground);
 }
 
-:where(.ore-button[data-loading]) {
+:where(.ore-button[data-loading], .ore-button[loading]) {
   color: transparent;
   text-shadow: none;
   cursor: wait;
 }
 
-:where(.ore-button[data-loading])::after {
+:where(.ore-button[data-loading], .ore-button[loading])::after {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -145,13 +145,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(.ore-button[data-loading])::after {
+  :where(.ore-button[data-loading], .ore-button[loading])::after {
     animation: none;
   }
 }
 
 :where(
-  .ore-button[data-loading] > :not(.ore-button-spinner, .ore-button-link)
+  .ore-button[data-loading] > :not(.ore-button-spinner, .ore-button-link),
+  .ore-button[loading] > :not(.ore-button-spinner, .ore-button-link)
 ) {
   visibility: hidden;
 }
@@ -329,7 +330,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where(.ore-button[data-loading])::after {
+  :where(.ore-button[data-loading], .ore-button[loading])::after {
     animation: none;
   }
 }

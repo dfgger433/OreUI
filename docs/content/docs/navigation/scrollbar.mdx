@@ -3,16 +3,13 @@ title: Scrollbar
 description: Add scrollbar to scrollable content.
 ---
 
-import { ScrollbarStory } from "@/components/stories/scrollbar.story";
-
-<ScrollbarStory />
-
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/scrollbar";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
@@ -23,88 +20,9 @@ import "oreui-web/scrollbar";
 </div>
 ```
 
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Scrollbar } from "@oreui-web/react/scrollbar";
-
-export function WorldList() {
-  return (
-    <Scrollbar aria-label="World list" style={{ maxHeight: "12rem" }}>
-      <div>World 1</div>
-      <div>World 2</div>
-      <div>World 3</div>
-    </Scrollbar>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Scrollbar } from "@oreui-web/vue/scrollbar";
-</script>
-
-<template>
-  <Scrollbar aria-label="World list" style="max-height: 12rem">
-    <div>World 1</div>
-    <div>World 2</div>
-    <div>World 3</div>
-  </Scrollbar>
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Scrollbar from "@oreui-web/svelte/scrollbar";
-</script>
-
-<Scrollbar aria-label="World list" style="max-height: 12rem;">
-  <div>World 1</div>
-  <div>World 2</div>
-  <div>World 3</div>
-</Scrollbar>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Scrollbar } from "@oreui-web/solid/scrollbar";
-
-export function ScrollableContent() {
-  return <Scrollbar style={{ height: "12rem" }}>Scrollable content</Scrollbar>;
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<div class="ore-scrollbar" aria-label="World list" style="max-height: 12rem;">
-	<div>World 1</div>
-	<div>World 2</div>
-	<div>World 3</div>
-</div>
-
-<script>
-  import "oreui-web/scrollbar";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
-
 ## Native scrolling
 
-Apply `.ore-scrollbar` to a real overflow container. Wheel scrolling, touch inertia, and scroll position remain attached to that native container. The optional `oreui-web/scrollbar` controller manages `tabindex` from actual overflow, normalizes keyboard scrolling, and adds the Firefox visual fallback.
+Apply `.ore-scrollbar` to a real overflow container. Wheel scrolling, touch inertia, and scroll position remain attached to that native container. The runtime manages `tabindex` from actual overflow, normalizes keyboard scrolling, and adds the Firefox visual fallback.
 
 ```html
 <div class="ore-scrollbar" style="max-height: 12rem; overflow: auto;">

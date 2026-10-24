@@ -11,83 +11,186 @@ export type OreToastVariant = OreTagVariant;
 export type OreToastElement = HTMLElement;
 
 type ToastState = {
+  attributes: Record<string, string | null>;
   duration: number;
   remaining: number;
   startedAt: number;
+  styles: string;
   timer?: number;
+};
+
+type PopoverToast = OreToastElement & {
+  hidePopover: () => void;
+  showPopover: () => void;
 };
 
 const selector = ".ore-toast";
 const states = new WeakMap<OreToastElement, ToastState>();
+
+type OwnerWindow = Window & {
+  CSS?: {
+    supports: (conditionText: string) => boolean;
+  };
+  CustomEvent: new <T>(
+    type: string,
+    eventInitDict?: CustomEventInit<T>,
+  ) => CustomEvent<T>;
+};
+
+function supportsPopoverSelector(ownerWindow: Window): boolean {
+  try {
+    const CSS = (ownerWindow as OwnerWindow).CSS;
+    return (
+      typeof CSS?.supports === "function" &&
+      CSS.supports("selector(:popover-open)")
+    );
+  } catch {
+    return false;
+  }
+}
+
+function getOwnerWindow(toast: OreToastElement): Window | null {
+  return toast.ownerDocument.defaultView;
+}
+
+function supportsPopover(
+  toast: OreToastElement,
+  ownerWindow: Window,
+): toast is PopoverToast {
+  return (
+    supportsPopoverSelector(ownerWindow) &&
+    typeof toast.showPopover === "function" &&
+    typeof toast.hidePopover === "function"
+  );
+}
+
+function isOpen(toast: OreToastElement, ownerWindow: Window): boolean {
+  if (supportsPopover(toast, ownerWindow)) {
+    try {
+      return toast.matches(":popover-open");
+    } catch {
+      return false;
+    }
+  }
+
+  return toast.hasAttribute("data-ore-fallback-open");
+}
 
 function durationFor(toast: OreToastElement): number {
   const duration = Number(toast.dataset.duration ?? 3000);
   return Number.isFinite(duration) && duration >= 0 ? duration : 3000;
 }
 
-function clearTimer(state: ToastState): void {
-  window.clearTimeout(state.timer);
+function clearTimer(state: ToastState, ownerWindow: Window): void {
+  ownerWindow.clearTimeout(state.timer);
   state.timer = undefined;
 }
 
-function startTimer(toast: OreToastElement): void {
+function startTimer(toast: OreToastElement, open?: boolean): void {
+  const ownerWindow = getOwnerWindow(toast);
+  if (!ownerWindow) {
+    return;
+  }
+  open ??= isOpen(toast, ownerWindow);
   const state = states.get(toast);
-  if (!state || state.remaining <= 0 || !toast.matches(":popover-open")) {
+  if (!state || state.remaining <= 0 || !open) {
     return;
   }
 
-  clearTimer(state);
-  state.startedAt = performance.now();
-  state.timer = window.setTimeout(() => closeToast(toast), state.remaining);
+  clearTimer(state, ownerWindow);
+  state.startedAt = ownerWindow.performance.now();
+  state.timer = ownerWindow.setTimeout(
+    () => closeToast(toast),
+    state.remaining,
+  );
 }
 
 function pauseTimer(toast: OreToastElement): void {
+  const ownerWindow = getOwnerWindow(toast);
   const state = states.get(toast);
-  if (state?.timer === undefined) {
+  if (!ownerWindow || state?.timer === undefined) {
     return;
   }
 
   state.remaining = Math.max(
     0,
-    state.remaining - (performance.now() - state.startedAt),
+    state.remaining - (ownerWindow.performance.now() - state.startedAt),
   );
-  clearTimer(state);
+  clearTimer(state, ownerWindow);
 }
 
-function resetTimer(toast: OreToastElement): void {
+function resetTimer(toast: OreToastElement, open?: boolean): void {
+  const ownerWindow = getOwnerWindow(toast);
   const state = states.get(toast);
-  if (!state) {
+  if (!ownerWindow || !state) {
     return;
   }
 
+  open ??= isOpen(toast, ownerWindow);
   state.duration = durationFor(toast);
   state.remaining = state.duration;
-  startTimer(toast);
+  startTimer(toast, open);
 }
 
 function dispatchOpenChange(toast: OreToastElement, open: boolean): void {
+  const ownerWindow = getOwnerWindow(toast);
+  if (!ownerWindow) {
+    return;
+  }
+  const CustomEventCtor = (ownerWindow as OwnerWindow).CustomEvent;
   toast.dispatchEvent(
-    new CustomEvent<boolean>("oreui:openchange", {
+    new CustomEventCtor<boolean>("oreui:openchange", {
       bubbles: true,
       detail: open,
     }),
   );
 }
 
-function handleToggle(event: ToggleEvent): void {
-  const toast = event.currentTarget as OreToastElement;
-  const open = event.newState === "open";
-
+function updateOpenState(toast: OreToastElement, open: boolean): void {
+  const state = states.get(toast);
   if (open) {
-    resetTimer(toast);
-  } else {
-    const state = states.get(toast);
-    if (state) {
-      clearTimer(state);
+    resetTimer(toast, true);
+  } else if (state) {
+    const ownerWindow = getOwnerWindow(toast);
+    if (ownerWindow) {
+      clearTimer(state, ownerWindow);
     }
   }
 
   dispatchOpenChange(toast, open);
+}
+
+function setFallbackOpen(toast: OreToastElement, open: boolean): void {
+  if (open) {
+    toast.hidden = false;
+    toast.setAttribute("data-ore-fallback-open", "");
+  } else {
+    toast.hidden = true;
+    toast.removeAttribute("data-ore-fallback-open");
+  }
+
+  updateOpenState(toast, open);
+}
+
+function handleToggle(event: Event): void {
+  const toast = event.currentTarget;
+  if (!toast || typeof toast !== "object" || !("ownerDocument" in toast)) {
+    return;
+  }
+  const ownerWindow = getOwnerWindow(toast as OreToastElement);
+  if (!ownerWindow) {
+    return;
+  }
+
+  const newState = (event as Event & { newState?: string }).newState;
+  const open =
+    newState === "open"
+      ? true
+      : newState === "closed"
+        ? false
+        : isOpen(toast as OreToastElement, ownerWindow);
+
+  updateOpenState(toast as OreToastElement, open);
 }
 
 function handlePointerEnter(event: PointerEvent): void {
@@ -110,17 +213,36 @@ function handleFocusOut(event: FocusEvent): void {
 }
 
 export function showToast(toast: OreToastElement): void {
+  if (!toast.isConnected) {
+    return;
+  }
+
   initToast(toast);
-  if (!toast.matches(":popover-open")) {
-    toast.showPopover();
+  const ownerWindow = getOwnerWindow(toast);
+  if (!ownerWindow) {
+    return;
+  }
+  if (!isOpen(toast, ownerWindow)) {
+    if (supportsPopover(toast, ownerWindow)) {
+      toast.showPopover();
+    } else {
+      setFallbackOpen(toast, true);
+    }
   } else {
     resetTimer(toast);
   }
 }
 
 export function closeToast(toast: OreToastElement): void {
-  if (toast.matches(":popover-open")) {
+  const ownerWindow = getOwnerWindow(toast);
+  if (!ownerWindow || !isOpen(toast, ownerWindow)) {
+    return;
+  }
+
+  if (supportsPopover(toast, ownerWindow)) {
     toast.hidePopover();
+  } else {
+    setFallbackOpen(toast, false);
   }
 }
 
@@ -130,13 +252,32 @@ export function destroyToast(toast: OreToastElement): void {
     return;
   }
 
-  clearTimer(state);
+  const ownerWindow = getOwnerWindow(toast);
+  if (!ownerWindow) {
+    return;
+  }
+  clearTimer(state, ownerWindow);
+  if (isOpen(toast, ownerWindow)) {
+    if (supportsPopover(toast, ownerWindow)) {
+      toast.hidePopover();
+    } else {
+      toast.hidden = true;
+      toast.removeAttribute("data-ore-fallback-open");
+    }
+  }
   toast.removeEventListener("toggle", handleToggle);
   toast.removeEventListener("pointerenter", handlePointerEnter);
   toast.removeEventListener("pointerleave", handlePointerLeave);
   toast.removeEventListener("focusin", handleFocusIn);
   toast.removeEventListener("focusout", handleFocusOut);
-  toast.removeAttribute("data-ore-initialized");
+  for (const [attribute, value] of Object.entries(state.attributes)) {
+    if (value === null) {
+      toast.removeAttribute(attribute);
+    } else {
+      toast.setAttribute(attribute, value);
+    }
+  }
+  toast.style.cssText = state.styles;
   states.delete(toast);
 }
 
@@ -145,8 +286,30 @@ export function initToast(toast: OreToastElement): void {
     return;
   }
 
+  const ownerWindow = getOwnerWindow(toast);
+  if (!ownerWindow) {
+    return;
+  }
+
   const duration = durationFor(toast);
-  states.set(toast, { duration, remaining: duration, startedAt: 0 });
+  const attributes = Object.fromEntries(
+    [
+      "popover",
+      "role",
+      "aria-live",
+      "aria-atomic",
+      "data-ore-fallback-open",
+      "hidden",
+      "data-ore-initialized",
+    ].map((attribute) => [attribute, toast.getAttribute(attribute)]),
+  );
+  states.set(toast, {
+    attributes,
+    duration,
+    remaining: duration,
+    startedAt: 0,
+    styles: toast.style.cssText,
+  });
   toast.dataset.oreInitialized = "toast";
   toast.setAttribute("popover", "manual");
   toast.setAttribute("role", "status");
@@ -158,6 +321,10 @@ export function initToast(toast: OreToastElement): void {
   toast.addEventListener("focusin", handleFocusIn);
   toast.addEventListener("focusout", handleFocusOut);
 
+  if (!supportsPopover(toast, ownerWindow)) {
+    toast.hidden = true;
+  }
+
   if (
     toast.hasAttribute("data-open") ||
     toast.hasAttribute("data-default-open")
@@ -166,57 +333,17 @@ export function initToast(toast: OreToastElement): void {
   }
 }
 
-export function initToasts(root: ParentNode = document): void {
-  if (root instanceof HTMLElement && root.matches(selector)) {
-    initToast(root);
+export function initToasts(root: ParentNode): void {
+  if (
+    typeof root === "object" &&
+    root !== null &&
+    "nodeType" in root &&
+    (root as Node).nodeType === 1 &&
+    (root as Element).matches(selector)
+  ) {
+    initToast(root as OreToastElement);
   }
   for (const toast of root.querySelectorAll<OreToastElement>(selector)) {
     initToast(toast);
   }
-}
-
-if (typeof document !== "undefined") {
-  initToasts();
-  new MutationObserver((records) => {
-    for (const record of records) {
-      for (const node of record.removedNodes) {
-        if (node instanceof HTMLElement) {
-          if (node.matches(selector)) {
-            destroyToast(node);
-          }
-          for (const toast of node.querySelectorAll<OreToastElement>(
-            selector,
-          )) {
-            destroyToast(toast);
-          }
-        }
-      }
-      for (const node of record.addedNodes) {
-        if (node instanceof HTMLElement) {
-          initToasts(node);
-        }
-      }
-      if (
-        record.type === "attributes" &&
-        record.target instanceof HTMLElement &&
-        record.target.matches(selector)
-      ) {
-        const toast = record.target;
-        if (record.attributeName === "data-duration") {
-          resetTimer(toast);
-        } else if (record.attributeName === "data-open") {
-          if (toast.hasAttribute("data-open")) {
-            showToast(toast);
-          } else {
-            closeToast(toast);
-          }
-        }
-      }
-    }
-  }).observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["data-duration", "data-open"],
-    childList: true,
-    subtree: true,
-  });
 }

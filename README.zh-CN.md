@@ -10,7 +10,7 @@
 </h1>
 
 <p>
-  非官方 Ore UI 跨框架组件库，将 Ore UI 设计系统应用到您的项目中。
+  非官方 Ore UI Vanilla DOM 组件库，将 Ore UI 设计系统应用到您的项目中。
 </p>
 
 [![Pull Requests][github-pr-badge]][github-pr-link]
@@ -29,14 +29,14 @@
 ## 介绍
 OreUI 是一个非官方粉丝向的组件库，将 Minecraft 的 Ore UI 设计系统应用到您的 Web 项目中。
 
-包含超过 25 个组件，共享一个与框架无关的 Web Component 核心，并对特定框架提供轻量适配。
+包含超过 25 个组件，为语义化 HTML 提供与框架无关的 DOM 行为和样式。
 
 完整文档请访问 [katorly.dev/OreUI](https://katorly.dev/OreUI/docs)。
 
 ### 特性
-- **跨框架**：支持 Vanilla JavaScript、React、Vue 等
-- **CSS 优先**：专注视觉设计，仅使用少量 JavaScript
-- **精简核心**：Lit 是唯一的运行时依赖
+- **Vanilla 核心**：为普通 Web 文档和 Firefox 浏览器宿主提供与框架无关的 DOM API
+- **CSS 优先**：为语义化 HTML 提供 OreUI 样式和行为
+- **生命周期明确**：按宿主生命周期创建并销毁受管理的运行时
 - **自定义程度高**：使用 CSS 变量、TailwindCSS、PandaCSS 和 Props 进行自定义
 - **无障碍**：支持语义化 HTML、键盘操作、焦点管理和 ARIA
 
@@ -44,16 +44,19 @@ OreUI 是一个非官方粉丝向的组件库，将 Minecraft 的 Ore UI 设计�
 | 软件包 | 版本 | 下载量 | 链接 |
 | ------ | ---- | ------ | ---- |
 | <img src="docs/public/frameworks/javascript.svg" alt="" width="16" height="16"> `oreui-web` | [![](https://img.shields.io/npm/v/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web) | [![](https://img.shields.io/npm/dm/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web) | [文档](https://katorly.dev/OreUI/docs/getting-started/vanilla) · [源码](https://github.com/katorlys/OreUI) |
-| <img src="docs/public/frameworks/react.svg" alt="" width="16" height="16"> `@oreui-web/react` | [![](https://img.shields.io/npm/v/%40oreui-web%2Freact?style=flat-square)](https://www.npmjs.com/package/@oreui-web/react) | [![](https://img.shields.io/npm/dm/%40oreui-web%2Freact?style=flat-square)](https://www.npmjs.com/package/@oreui-web/react) | [文档](https://katorly.dev/OreUI/docs/getting-started/react) · [源码](https://github.com/katorlys/OreUI/tree/main/packages/react) |
-| <img src="docs/public/frameworks/vue.svg" alt="" width="16" height="16"> `@oreui-web/vue` | [![](https://img.shields.io/npm/v/%40oreui-web%2Fvue?style=flat-square)](https://www.npmjs.com/package/@oreui-web/vue) | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fvue?style=flat-square)](https://www.npmjs.com/package/@oreui-web/vue) | [文档](https://katorly.dev/OreUI/docs/getting-started/vue) · [源码](https://github.com/katorlys/OreUI/tree/main/packages/vue) |
-| <img src="docs/public/frameworks/svelte.svg" alt="" width="16" height="16"> `@oreui-web/svelte` | [![](https://img.shields.io/npm/v/%40oreui-web%2Fsvelte?style=flat-square)](https://www.npmjs.com/package/@oreui-web/svelte) | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fsvelte?style=flat-square)](https://www.npmjs.com/package/@oreui-web/svelte) | [文档](https://katorly.dev/OreUI/zh-CN/docs/getting-started/svelte) · [源码](https://github.com/katorlys/OreUI/tree/main/packages/svelte) |
-| <img src="docs/public/frameworks/solid.svg" alt="" width="16" height="16"> `@oreui-web/solid` | [![](https://img.shields.io/npm/v/%40oreui-web%2Fsolid?style=flat-square)](https://www.npmjs.com/package/@oreui-web/solid) | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fsolid?style=flat-square)](https://www.npmjs.com/package/@oreui-web/solid) | [文档](https://katorly.dev/OreUI/zh-CN/docs/getting-started/solid) · [源码](https://github.com/katorlys/OreUI/tree/main/packages/solid) |
+
 
 ### Figma
 [![oreui_web](https://img.shields.io/badge/@oreui__web-F24E1E?style=flat-square&logo=figma&logoColor=white&label=Figma)](https://www.figma.com/@oreui_web)
 
+### 迁移说明
+
+- 将隐式自动启动的 `import "oreui-web"` 替换为 `import { createOreUIRuntime } from "oreui-web/runtime"`，然后在宿主拥有的根节点上调用 `init()`。
+- 如果从旧版包装器集成迁移，请改用语义化 HTML、`oreui-web/styles.css` 和 Vanilla 核心 API；当前发布的产品表面仅支持 Vanilla。
+- 如需暂时保留旧的全局文档行为，请显式导入 `oreui-web/auto`，并将其 observer 视为应用拥有的全局状态。
+
 ## 开始使用
-在[快速开始](https://katorly.dev/OreUI/docs/getting-started)中选择框架，或浏览[所有组件](https://katorly.dev/OreUI/docs/overview)。
+请参阅 [Vanilla 快速开始指南](https://katorly.dev/OreUI/zh-CN/docs/getting-started/vanilla)，或浏览[所有组件](https://katorly.dev/OreUI/docs/overview)。
 
 ## 参与贡献
 向 OreUI 贡献代码，请访问[贡献指南](https://katorly.dev/OreUI/docs/contributing)。

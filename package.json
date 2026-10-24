@@ -1,7 +1,7 @@
 {
   "name": "oreui-web",
   "version": "0.1.0-beta.1",
-  "description": "An unofficial Ore UI cross-framework component library.",
+  "description": "An unofficial Ore UI Web Component library.",
   "type": "module",
   "repository": {
     "type": "git",
@@ -28,9 +28,10 @@
   },
   "license": "MPL-2.0",
   "sideEffects": [
-    "**/*.css",
-    "dist/components/**/*.js",
-    "!dist/components/scrollbar-controller/**/*.js"
+    "./dist/auto.js",
+    "./dist/styles.css",
+    "./dist/components/**/*.js",
+    "!./dist/components/scrollbar-controller/**/*.js"
   ],
   "files": [
     "dist",
@@ -45,41 +46,45 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./*": {
+    "./runtime": {
+      "types": "./dist/runtime/runtime.d.ts",
+      "import": "./dist/runtime.js"
+    },
+    "./auto": {
+      "types": "./dist/auto.d.ts",
+      "import": "./dist/auto.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js"
+    },
+    "./components/*": {
       "types": "./dist/components/*/*.d.ts",
       "import": "./dist/components/*/*.js"
     },
     "./styles.css": "./dist/styles.css",
+    "./assets/*": "./dist/assets/*",
     "./icons/*": "./dist/icons/*.svg",
     "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "vite",
-    "build": "pnpm build:core && pnpm --filter @oreui-web/react build && pnpm --filter @oreui-web/vue build && pnpm --filter @oreui-web/svelte build && pnpm --filter @oreui-web/solid build",
+    "build": "pnpm build:core",
     "build:core": "vite build && tsc -p tsconfig.build.json && node scripts/copy-assets.js",
     "docs:build": "pnpm --filter @katorlys/oreui-docs build",
     "docs:dev": "pnpm --filter @katorlys/oreui-docs dev",
     "docs:typecheck": "pnpm --filter @katorlys/oreui-docs typecheck",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "typecheck": "pnpm typecheck:core && pnpm --filter @oreui-web/react typecheck && pnpm --filter @oreui-web/vue typecheck && pnpm --filter @oreui-web/svelte typecheck && pnpm --filter @oreui-web/solid typecheck",
+    "typecheck": "pnpm typecheck:core",
     "typecheck:core": "tsc --noEmit",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^7.3.0",
     "@types/node": "^24.13.3",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
     "prettier": "^3.9.6",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "solid-js": "^1.9.15",
-    "svelte": "^5.57.0",
     "typescript": "^7.0.2",
-    "vite": "^8.2.2",
-    "vite-plugin-solid": "^2.11.14",
-    "vue": "^3.5.42"
+    "vite": "^8.2.2"
   },
   "engines": {
     "node": ">=20.19.0"

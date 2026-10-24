@@ -2,8 +2,12 @@ export type OreTabButton = HTMLButtonElement;
 export type OreTabButtonPalette = "default" | "toggle";
 
 const states = new Set<OreTabButton>();
+const observers = new WeakMap<OreTabButton, MutationObserver>();
+const previousAttributes = new WeakMap<
+  OreTabButton,
+  Record<string, string | null>
+>();
 const tabSelector = "button.ore-tab-button";
-let observer: MutationObserver | undefined;
 
 function tabsFor(tab: OreTabButton): OreTabButton[] {
   const tablist = tab.closest('[role="tablist"]');
@@ -45,7 +49,10 @@ function selectTab(tab: OreTabButton): void {
     }
     syncTab(item);
   }
-  tab.dispatchEvent(new Event("change", { bubbles: true }));
+  const EventConstructor = tab.ownerDocument.defaultView?.Event;
+  if (EventConstructor) {
+    tab.dispatchEvent(new EventConstructor("change", { bubbles: true }));
+  }
 }
 
 function moveTab(tab: OreTabButton, offset: number): void {
@@ -96,10 +103,29 @@ export function initTabButton(tab: OreTabButton): void {
     return;
   }
 
+  const ownerWindow = tab.ownerDocument.defaultView;
+  if (!ownerWindow) {
+    return;
+  }
+
   states.add(tab);
+  previousAttributes.set(
+    tab,
+    Object.fromEntries(
+      ["role", "aria-selected", "tabindex", "data-ore-initialized"].map(
+        (attribute) => [attribute, tab.getAttribute(attribute)],
+      ),
+    ),
+  );
   tab.dataset.oreInitialized = "tab-button";
   tab.addEventListener("click", handleClick);
   tab.addEventListener("keydown", handleKeydown);
+  const mutationObserver = new ownerWindow.MutationObserver(() => syncTab(tab));
+  mutationObserver.observe(tab, {
+    attributes: true,
+    attributeFilter: ["aria-selected", "disabled"],
+  });
+  observers.set(tab, mutationObserver);
   syncTab(tab);
 }
 
@@ -110,62 +136,30 @@ export function destroyTabButton(tab: OreTabButton): void {
 
   tab.removeEventListener("click", handleClick);
   tab.removeEventListener("keydown", handleKeydown);
-  delete tab.dataset.oreInitialized;
-}
-
-function destroyTabButtons(root: Node): void {
-  if (root instanceof HTMLButtonElement && root.matches(tabSelector)) {
-    destroyTabButton(root);
-  }
-  if (root instanceof HTMLElement) {
-    for (const tab of root.querySelectorAll<OreTabButton>(tabSelector)) {
-      destroyTabButton(tab);
+  observers.get(tab)?.disconnect();
+  observers.delete(tab);
+  const attributes = previousAttributes.get(tab);
+  if (attributes) {
+    for (const [attribute, value] of Object.entries(attributes)) {
+      if (value === null) {
+        tab.removeAttribute(attribute);
+      } else {
+        tab.setAttribute(attribute, value);
+      }
     }
   }
+  previousAttributes.delete(tab);
 }
 
-export function initTabButtons(root: ParentNode = document): void {
-  if (root instanceof HTMLButtonElement && root.matches(tabSelector)) {
-    initTabButton(root);
+export function initTabButtons(root: ParentNode): void {
+  if (
+    (root as Node).nodeType === 1 &&
+    (root as Element).localName === "button" &&
+    (root as Element).matches(tabSelector)
+  ) {
+    initTabButton(root as OreTabButton);
   }
   for (const tab of root.querySelectorAll<OreTabButton>(tabSelector)) {
     initTabButton(tab);
   }
-}
-
-function startObserver(): void {
-  if (typeof document === "undefined" || observer) {
-    return;
-  }
-
-  observer = new MutationObserver((records) => {
-    for (const record of records) {
-      if (
-        record.type === "attributes" &&
-        record.target instanceof HTMLButtonElement &&
-        record.target.matches(tabSelector)
-      ) {
-        syncTab(record.target);
-      }
-      for (const node of record.removedNodes) {
-        destroyTabButtons(node);
-      }
-      for (const node of record.addedNodes) {
-        if (node instanceof HTMLElement) {
-          initTabButtons(node);
-        }
-      }
-    }
-  });
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["aria-selected", "disabled"],
-    childList: true,
-    subtree: true,
-  });
-}
-
-if (typeof document !== "undefined") {
-  startObserver();
-  initTabButtons();
 }

@@ -12,6 +12,18 @@ export type OreSliderOrientation = "horizontal" | "vertical";
 const sliderSelector = "input.ore-slider";
 const sliderAttributes = ["max", "min", "step", "value"];
 
+interface SliderState {
+  form?: HTMLFormElement;
+  handleInput: () => void;
+  handleReset?: () => void;
+  mutationObserver: MutationObserver;
+  progressEnd: string;
+  segmentSize: string;
+  initialized: string | null;
+}
+
+const states = new WeakMap<HTMLInputElement, SliderState>();
+
 export function syncSlider(slider: HTMLInputElement): void {
   const minValue = Number(slider.min);
   const maxValue = Number(slider.max);
@@ -40,22 +52,97 @@ export function syncSlider(slider: HTMLInputElement): void {
 }
 
 function initSlider(slider: HTMLInputElement): void {
-  if (slider.dataset.oreInitialized === "slider") {
+  if (states.has(slider)) {
     syncSlider(slider);
     return;
   }
 
+  const ownerWindow = slider.ownerDocument.defaultView;
+  if (!ownerWindow) {
+    return;
+  }
+
+  const handleInput = (): void => syncSlider(slider);
+  const handleReset = slider.form
+    ? (): void => queueMicrotask(() => syncSlider(slider))
+    : undefined;
+  const state: SliderState = {
+    form: slider.form ?? undefined,
+    handleInput,
+    handleReset,
+    mutationObserver: new ownerWindow.MutationObserver(() =>
+      syncSlider(slider),
+    ),
+    progressEnd: slider.style.getPropertyValue("--ore-slider-progress-end"),
+    segmentSize: slider.style.getPropertyValue("--ore-slider-segment-size"),
+    initialized: slider.getAttribute("data-ore-initialized"),
+  };
+
+  states.set(slider, state);
   slider.dataset.oreInitialized = "slider";
-  slider.addEventListener("input", () => syncSlider(slider));
-  slider.form?.addEventListener("reset", () =>
-    queueMicrotask(() => syncSlider(slider)),
-  );
+  slider.addEventListener("input", handleInput);
+  if (state.form && handleReset) {
+    state.form.addEventListener("reset", handleReset);
+  }
+  state.mutationObserver.observe(slider, {
+    attributes: true,
+    attributeFilter: sliderAttributes,
+  });
   syncSlider(slider);
 }
 
-export function initSliders(root: ParentNode = document): void {
-  if (root instanceof HTMLInputElement && root.matches(sliderSelector)) {
-    initSlider(root);
+export function destroySlider(slider: HTMLInputElement): void {
+  const state = states.get(slider);
+  if (!state) {
+    return;
+  }
+
+  slider.removeEventListener("input", state.handleInput);
+  if (state.form && state.handleReset) {
+    state.form.removeEventListener("reset", state.handleReset);
+  }
+  state.mutationObserver.disconnect();
+  if (state.progressEnd) {
+    slider.style.setProperty("--ore-slider-progress-end", state.progressEnd);
+  } else {
+    slider.style.removeProperty("--ore-slider-progress-end");
+  }
+  if (state.segmentSize) {
+    slider.style.setProperty("--ore-slider-segment-size", state.segmentSize);
+  } else {
+    slider.style.removeProperty("--ore-slider-segment-size");
+  }
+  if (state.initialized === null) {
+    slider.removeAttribute("data-ore-initialized");
+  } else {
+    slider.setAttribute("data-ore-initialized", state.initialized);
+  }
+  states.delete(slider);
+}
+
+export function destroySliders(root: ParentNode): void {
+  if (
+    (root as Node).nodeType === 1 &&
+    (root as Element).localName === "input" &&
+    (root as Element).matches(sliderSelector)
+  ) {
+    destroySlider(root as HTMLInputElement);
+  }
+
+  for (const slider of root.querySelectorAll<HTMLInputElement>(
+    sliderSelector,
+  )) {
+    destroySlider(slider);
+  }
+}
+
+export function initSliders(root: ParentNode): void {
+  if (
+    (root as Node).nodeType === 1 &&
+    (root as Element).localName === "input" &&
+    (root as Element).matches(sliderSelector)
+  ) {
+    initSlider(root as HTMLInputElement);
   }
 
   for (const slider of root.querySelectorAll<HTMLInputElement>(
@@ -63,32 +150,4 @@ export function initSliders(root: ParentNode = document): void {
   )) {
     initSlider(slider);
   }
-}
-
-if (typeof document !== "undefined") {
-  initSliders();
-
-  new MutationObserver((records) => {
-    for (const record of records) {
-      if (
-        record.type === "attributes" &&
-        record.target instanceof HTMLInputElement &&
-        record.target.matches(sliderSelector)
-      ) {
-        syncSlider(record.target);
-        continue;
-      }
-
-      for (const node of record.addedNodes) {
-        if (node instanceof HTMLElement) {
-          initSliders(node);
-        }
-      }
-    }
-  }).observe(document.documentElement, {
-    attributeFilter: sliderAttributes,
-    attributes: true,
-    childList: true,
-    subtree: true,
-  });
 }

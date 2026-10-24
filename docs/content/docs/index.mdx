@@ -1,12 +1,12 @@
 ---
 title: Introduction
-description: Unofficial Ore UI cross-framework component library.
+description: Unofficial Ore UI Vanilla DOM component library.
 icon: House
 ---
 
 OreUI is an unofficial fan-made component library that brings Minecraft's Ore UI design system to your web projects.
 
-Its 25+ components share a framework-independent Web Component core, with light adapters for specific frameworks.
+Its 25+ components provide framework-independent DOM behavior and styling for semantic HTML.
 
 <Cards>
   <Card icon={<Rocket />} title="Get started" href="./getting-started">
@@ -22,21 +22,17 @@ Its 25+ components share a framework-independent Web Component core, with light 
 
 ### Features
 
-- **Cross-framework**: Vanilla JavaScript, React, Vue, and more
-- **CSS-first**: Focus on visual design, with minimal JavaScript
-- **Small core**: Lit is the only runtime dependency
+- **Vanilla core**: Framework-independent DOM APIs for ordinary web documents and Firefox browser hosts
+- **CSS-first**: Semantic HTML receives OreUI styling and behavior
+- **Explicit lifecycle**: Create and destroy an owned runtime when the host lifecycle requires it
 - **Fully customizable**: Customize using CSS variables, TailwindCSS, PandaCSS and properties
 - **Accessibility**: Semantic HTML, keyboard support, focus management, and ARIA
 
 ## Packages
 
-| Package                                                                                                                                                  | Version                                                                                                                      | Downloads                                                                                                                     | Links                                                                                                                                 |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| <img src="/OreUI/frameworks/javascript.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `oreui-web`     | [![](https://img.shields.io/npm/v/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web)                     | [![](https://img.shields.io/npm/dm/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web)                     | [Docs](https://katorly.dev/OreUI/docs/getting-started/vanilla) · [Source](https://github.com/katorlys/OreUI)                          |
-| <img src="/OreUI/frameworks/react.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `@oreui-web/react`   | [![](https://img.shields.io/npm/v/%40oreui-web%2Freact?style=flat-square)](https://www.npmjs.com/package/@oreui-web/react)   | [![](https://img.shields.io/npm/dm/%40oreui-web%2Freact?style=flat-square)](https://www.npmjs.com/package/@oreui-web/react)   | [Docs](https://katorly.dev/OreUI/docs/getting-started/react) · [Source](https://github.com/katorlys/OreUI/tree/main/packages/react)   |
-| <img src="/OreUI/frameworks/vue.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `@oreui-web/vue`       | [![](https://img.shields.io/npm/v/%40oreui-web%2Fvue?style=flat-square)](https://www.npmjs.com/package/@oreui-web/vue)       | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fvue?style=flat-square)](https://www.npmjs.com/package/@oreui-web/vue)       | [Docs](https://katorly.dev/OreUI/docs/getting-started/vue) · [Source](https://github.com/katorlys/OreUI/tree/main/packages/vue)       |
-| <img src="/OreUI/frameworks/svelte.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `@oreui-web/svelte` | [![](https://img.shields.io/npm/v/%40oreui-web%2Fsvelte?style=flat-square)](https://www.npmjs.com/package/@oreui-web/svelte) | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fsvelte?style=flat-square)](https://www.npmjs.com/package/@oreui-web/svelte) | [Docs](https://katorly.dev/OreUI/docs/getting-started/svelte) · [Source](https://github.com/katorlys/OreUI/tree/main/packages/svelte) |
-| <img src="/OreUI/frameworks/solid.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `@oreui-web/solid`   | [![](https://img.shields.io/npm/v/%40oreui-web%2Fsolid?style=flat-square)](https://www.npmjs.com/package/@oreui-web/solid)   | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fsolid?style=flat-square)](https://www.npmjs.com/package/@oreui-web/solid)   | [Docs](https://katorly.dev/OreUI/docs/getting-started/solid) · [Source](https://github.com/katorlys/OreUI/tree/main/packages/solid)   |
+| Package                                                                                                                                              | Version                                                                                                  | Downloads                                                                                                 | Links                                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| <img src="/OreUI/frameworks/javascript.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `oreui-web` | [![](https://img.shields.io/npm/v/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web) | [![](https://img.shields.io/npm/dm/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web) | [Docs](https://katorly.dev/OreUI/docs/getting-started/vanilla) · [Source](https://github.com/katorlys/OreUI) |
 
 ### Figma
 

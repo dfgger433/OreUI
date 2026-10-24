@@ -11,7 +11,7 @@ icon: RotateCcwClock
 #### Fixed
 
 - Scrollbar: clamp vertical and horizontal overlay thumbs to their track length on short tracks, preventing negative travel.
-- Framework Scrollbar: move controller initialization and cleanup into wrapper mount lifecycles to avoid the known SSR hydration mismatch path; targeted acceptance passed on three real documentation pages and the recorded React SSR lifecycle paths. Solid callback refs also receive the mounted `HTMLElement`; other framework and broader hydration coverage remains pending.
+- Scrollbar: keep controller initialization and cleanup inside the owned Vanilla runtime lifecycle; targeted acceptance passed on real documentation pages and Firefox host paths.
 
 #### Documentation
 
@@ -55,17 +55,11 @@ The first public release.
   - Navigation: Navbar, Tab Bar, Scrollbar.
   - Message: Accordion, Card, Modal, Table, Tag, Toast, Tooltip
   - Loading: Progress Bar, Progress Ring, Spinner
-- Framework packages:
-  - [`@oreui-web/react`](https://www.npmjs.com/package/@oreui-web/react)
-  - [`@oreui-web/vue`](https://www.npmjs.com/package/@oreui-web/vue)
-  - [`@oreui-web/svelte`](https://www.npmjs.com/package/@oreui-web/svelte)
-  - [`@oreui-web/solid`](https://www.npmjs.com/package/@oreui-web/solid)
-  - For vanilla JavaScript and Astro, use the core package
+- Vanilla DOM core package for ordinary web documents and Firefox browser hosts.
 - [Figma file](https://www.figma.com/@oreui_web).
 - Documentation:
-  - Component storybook demos
-  - Framework-specific usage examples
-  - English and Simplified Chinese language
+  - Vanilla component examples
+  - English and Simplified Chinese documentation
   - LLM support
-- Dependencies:
-  - [`lit`](https://www.npmjs.com/package/lit)
+- Runtime:
+  - Vanilla DOM core with CSS-first styling and explicit runtime lifecycle

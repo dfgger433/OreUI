@@ -3,14 +3,8 @@ title: Divider
 description: Separate sections of content.
 ---
 
-import { DividerStory } from "@/components/stories/divider.story";
-
-<DividerStory />
-
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -18,67 +12,6 @@ import "oreui-web/styles.css";
 ```html
 <hr class="ore-divider" />
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Divider } from "@oreui-web/react/divider";
-
-export function SettingsDivider() {
-  return <Divider />;
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Divider } from "@oreui-web/vue/divider";
-</script>
-
-<template>
-  <Divider />
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Divider from "@oreui-web/svelte/divider";
-</script>
-
-<Divider />
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Divider } from "@oreui-web/solid/divider";
-
-export function Sections() {
-  return <Divider />;
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<hr class="ore-divider" />
-
-<script>
-  import "oreui-web/styles.css";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 Divider fills the available width. Use the `ore-divider` class or ordinary CSS to control its width and surrounding spacing.
 

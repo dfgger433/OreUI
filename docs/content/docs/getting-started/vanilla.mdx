@@ -31,10 +31,12 @@ You can use a CDN to avoid installing any dependencies.
   href="https://cdn.jsdelivr.net/npm/oreui-web@latest/dist/styles.css"
 />
 
-<button type="button">Create new world</button>
+<button class="ore-button" type="button">Create new world</button>
 
 <script type="module">
-  import "https://cdn.jsdelivr.net/npm/oreui-web@latest/+esm";
+  import { createOreUIRuntime } from "https://cdn.jsdelivr.net/npm/oreui-web@latest/dist/runtime.js";
+
+  createOreUIRuntime(document).init();
 </script>
 ```
 
@@ -46,14 +48,37 @@ You can use a CDN to avoid installing any dependencies.
 
 ```js title="script.js"
 import "oreui-web/styles.css";
-import "oreui-web/button";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html title="index.html"
-<button type="button">Create new world</button>
+<button class="ore-button" type="button">Create new world</button>
 ```
 
-<Callout type="info">To use all the components, import `oreui-web`.</Callout>
+<Callout type="info">
+  The root and browser entries are side-effect-free. Use `oreui-web/auto` only
+  when you explicitly want document-wide observation; it is not loaded by the
+  root import.
+</Callout>
+
+## Browser and SSR hosts
+
+The same Vanilla DOM core works in an ordinary web document and in a host-owned `browser.xhtml` document. Pass the document, an element, or a shadow root that your host owns:
+
+```js
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(root, { observe: true });
+runtime.init();
+
+// Stop observers and restore component state before removing root.
+runtime.destroy();
+```
+
+The root import is SSR-safe and does not read `document` or install observers during module evaluation. Load `oreui-web/styles.css` under your CSP policy; the core does not inject inline styles or provide a privileged browser channel. AutoConfig, `resource://` mappings, iframe `type="content"`, and other Firefox-specific bootstrap belong in the host integration, not this package. See the [Firefox browser/chrome host example](https://github.com/katorlys/OreUI/blob/main/examples/firefox-browser-chrome-host/README.md) for a path-free integration outline.
 
 ## Examples
 
@@ -69,7 +94,7 @@ Forms:
 Events:
 
 ```js title="script.js"
-const form = document.querySelector < HTMLFormElement > "#account";
+const form = document.querySelector("#account");
 
 form?.addEventListener("submit", (event) => {
   event.preventDefault();

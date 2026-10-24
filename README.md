@@ -10,7 +10,7 @@
 </h1>
 
 <p>
-  Unofficial Ore UI cross-framework component library.
+  Unofficial Ore UI framework-independent Vanilla DOM component library.
 </p>
 
 [![Pull Requests][github-pr-badge]][github-pr-link]
@@ -27,34 +27,61 @@
 <!-- Main Body -->
 
 ## Introduction
-OreUI is an unofficial fan-made component library that brings Minecraft's Ore UI design system to your web projects.
+OreUI is an unofficial fan-made, CSS-first DOM component library that brings Minecraft's Ore UI visual language to web projects.
 
-Its 25+ components share a framework-independent Web Component core, with light adapters for specific frameworks.
+Its 25+ components are framework-independent DOM behavior and styling modules. They enhance semantic HTML in place; they are not Lit elements and do not require a Web Component custom-element runtime.
 
 Read the full documentation at [katorly.dev/OreUI](https://katorly.dev/OreUI/docs).
 
 ### Features
-- **Cross-framework**: Vanilla JavaScript, React, Vue, and more
-- **CSS-first**: Focus on visual design, with minimal JavaScript
-- **Small core**: Lit is the only runtime dependency
-- **Fully customizable**: Customize using CSS variables, TailwindCSS, PandaCSS and properties
+- **Vanilla core**: Framework-independent DOM APIs for ordinary web documents and browser.xhtml hosts
+- **CSS-first**: Semantic HTML receives OreUI styling and behavior; no custom-element registration is required
+- **Explicit lifecycle**: Importing the root is pure; call `createOreUIRuntime(root)` and later `destroy()` when ownership ends
+- **CSP-friendly**: Load `styles.css` normally, or provide an approved stylesheet sink in a host-controlled integration
 - **Accessibility**: Semantic HTML, keyboard support, focus management, and ARIA
+
+### Runtime and support policy
+
+The supported core target is ordinary web content and privileged `browser.xhtml` documents using the same DOM API. Firefox ESR 128+ is the target baseline; the exact ESR/Firefox version matrix is pending verification. Do not infer support for a specific release until the automated browser matrix is green.
+
+The root import is SSR-safe and observationally pure: it does not scan `document`, install observers, or mutate DOM during module evaluation. Create an explicit runtime for an owned root:
+
+```js
+import "oreui-web/styles.css";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document, { observe: true });
+runtime.init();
+
+// When the host removes or replaces this root:
+runtime.destroy();
+```
+
+`root` may be a `Document`, `Element`, or `ShadowRoot`. `observe` defaults to `false`; enable it only when the host wants dynamic subtree initialization and removal cleanup. Calling `destroy()` is idempotent and disconnects the runtime observer.
+
+For strict Content Security Policy deployments, keep CSS loading under host control. A host may load the published `styles.css` with a normal stylesheet URL or copy/adopt its approved contents through a `styleSink` owned by that host; OreUI does not create inline style tags, bypass CSP, or choose a browser-specific injection channel. The exact `styleSink` adapter is host policy, not part of the core runtime API.
+
+The legacy `oreui-web/auto` entry is an explicit compatibility entry that opts into document-wide observation. Prefer the pure root entry plus an owned runtime for applications, SSR, tests, and browser hosts. The `browser` entry is also side-effect-free and is suitable for prebundling; it never auto-initializes.
+
+### Migration
+
+- Replace `import "oreui-web"` as an implicit auto-start contract with `import { createOreUIRuntime } from "oreui-web/runtime"`, then call `init()` on the root you own.
+- If migrating from an older wrapper-based integration, use semantic HTML plus `oreui-web/styles.css` and the Vanilla core APIs; the published product surface is now Vanilla-only.
+- If you need legacy document-wide behavior temporarily, import `oreui-web/auto` explicitly and treat its observer as application-owned global state.
+- Do not copy a browser-chrome experiment into the core: AutoConfig, `resource://` substitutions, iframe `type="content"`, and Firefox-specific privileged bootstrap are excluded from this package. A browser host must provide its own integration boundary and CSP policy.
 
 ## Packages
 | Package | Version | Downloads | Links |
 | ------- | ------- | --------- | ----- |
 | <img src="docs/public/frameworks/javascript.svg" alt="" width="16" height="16"> `oreui-web` | [![](https://img.shields.io/npm/v/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web) | [![](https://img.shields.io/npm/dm/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web) | [Docs](https://katorly.dev/OreUI/docs/getting-started/vanilla) · [Source](https://github.com/katorlys/OreUI) |
-| <img src="docs/public/frameworks/react.svg" alt="" width="16" height="16"> `@oreui-web/react` | [![](https://img.shields.io/npm/v/%40oreui-web%2Freact?style=flat-square)](https://www.npmjs.com/package/@oreui-web/react) | [![](https://img.shields.io/npm/dm/%40oreui-web%2Freact?style=flat-square)](https://www.npmjs.com/package/@oreui-web/react) | [Docs](https://katorly.dev/OreUI/docs/getting-started/react) · [Source](https://github.com/katorlys/OreUI/tree/main/packages/react) |
-| <img src="docs/public/frameworks/vue.svg" alt="" width="16" height="16"> `@oreui-web/vue` | [![](https://img.shields.io/npm/v/%40oreui-web%2Fvue?style=flat-square)](https://www.npmjs.com/package/@oreui-web/vue) | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fvue?style=flat-square)](https://www.npmjs.com/package/@oreui-web/vue) | [Docs](https://katorly.dev/OreUI/docs/getting-started/vue) · [Source](https://github.com/katorlys/OreUI/tree/main/packages/vue) |
-| <img src="docs/public/frameworks/svelte.svg" alt="" width="16" height="16"> `@oreui-web/svelte` | [![](https://img.shields.io/npm/v/%40oreui-web%2Fsvelte?style=flat-square)](https://www.npmjs.com/package/@oreui-web/svelte) | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fsvelte?style=flat-square)](https://www.npmjs.com/package/@oreui-web/svelte) | [Docs](https://katorly.dev/OreUI/docs/getting-started/svelte) · [Source](https://github.com/katorlys/OreUI/tree/main/packages/svelte) |
-| <img src="docs/public/frameworks/solid.svg" alt="" width="16" height="16"> `@oreui-web/solid` | [![](https://img.shields.io/npm/v/%40oreui-web%2Fsolid?style=flat-square)](https://www.npmjs.com/package/@oreui-web/solid) | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fsolid?style=flat-square)](https://www.npmjs.com/package/@oreui-web/solid) | [Docs](https://katorly.dev/OreUI/docs/getting-started/solid) · [Source](https://github.com/katorlys/OreUI/tree/main/packages/solid) |
+
 
 ### Figma
 [![oreui_web](https://img.shields.io/badge/@oreui__web-F24E1E?style=flat-square&logo=figma&logoColor=white&label=Figma)](https://www.figma.com/@oreui_web)
 
 
 ## Getting started
-Choose your framework in [getting started](https://katorly.dev/OreUI/docs/getting-started), or browse [all components](https://katorly.dev/OreUI/docs/overview).
+Follow the [Vanilla getting started guide](https://katorly.dev/OreUI/docs/getting-started/vanilla), or browse [all components](https://katorly.dev/OreUI/docs/overview).
 
 ## Contributing
 For information on how to contribute, please refer to the [contributing guidelines](https://katorly.dev/OreUI/docs/contributing).

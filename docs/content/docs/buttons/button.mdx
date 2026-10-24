@@ -3,20 +3,10 @@ title: Button
 description: Trigger an action.
 ---
 
-import {
-  ButtonAffixesPreview,
-  ButtonStory,
-  LinkButtonPreview,
-} from "@/components/stories/button.story";
-
 Use buttons for actions such as confirming a choice, opening a screen, or submitting a form.
-
-<ButtonStory />
 
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -24,63 +14,6 @@ import "oreui-web/styles.css";
 ```html
 <button class="ore-button" type="button">Create new world</button>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Button } from "@oreui-web/react/button";
-
-export function App() {
-  return <Button type="button">Create new world</Button>;
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Button } from "@oreui-web/vue/button";
-</script>
-
-<template>
-  <Button type="button">Create new world</Button>
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Button from "@oreui-web/svelte/button";
-</script>
-
-<Button type="button">Create new world</Button>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Button } from "@oreui-web/solid/button";
-
-export function App() {
-  return <Button type="button">Create new world</Button>;
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<button class="ore-button" type="button">Create new world</button>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## Variants
 
@@ -109,7 +42,7 @@ export function App() {
 
 ## Loading
 
-Set `data-loading` while an action is in progress, and keep the native button disabled with `aria-busy="true"`. Framework bindings do this mapping when their `loading` prop is set.
+Set `data-loading` while an action is in progress, and keep the native button disabled with `aria-busy="true"`. The native attributes remain the source of truth for interaction and accessibility.
 
 ```html
 <button class="ore-button" data-loading aria-busy="true" disabled>
@@ -120,8 +53,6 @@ Set `data-loading` while an action is in progress, and keep the native button di
 ## Prefix and suffix
 
 Use the public `.ore-button-prefix` and `.ore-button-suffix` classes to place presentational elements around the label.
-
-<ButtonAffixesPreview />
 
 ```html
 <button class="ore-button" type="button">
@@ -139,12 +70,10 @@ Use the public `.ore-button-prefix` and `.ore-button-suffix` classes to place pr
 
 Use a native anchor with `class="ore-button"` for navigation. It preserves browser behaviors such as opening in a new tab, copying the link, and downloading a resource.
 
-<LinkButtonPreview />
-
 ```html
 <a
   class="ore-button"
-  href="https://example.com"
+  href="https://katorly.dev/OreUI/"
   target="_blank"
   rel="noreferrer"
 >

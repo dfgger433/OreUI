@@ -5,9 +5,6 @@ import { HomeLayout } from "fumadocs-ui/layouts/home";
 import { useRouter } from "next/navigation";
 import { createElement } from "react";
 
-import { Button } from "@oreui-web/react/button";
-import chevronRightUrl from "oreui-web/icons/chevron-right";
-import { HomeShowcase } from "@/components/home-showcase";
 import { baseOptions } from "@/lib/layout";
 import packageMetadata from "../../package.json";
 
@@ -20,14 +17,12 @@ export function OreHomePage({ lang }: HomePageProps) {
   const router = useRouter();
   const year = new Date().getFullYear();
   const version = packageMetadata.version;
-  const chevronRightSource =
-    typeof chevronRightUrl === "string" ? chevronRightUrl : chevronRightUrl.src;
   const title =
     lang === "zh-CN" ? "在您的项目中使用 Ore UI" : "Ore UI in your projects";
   const description =
     lang === "zh-CN"
-      ? "非官方粉丝向的跨框架组件库，将 Ore UI 设计系统应用到您的项目中"
-      : "An unofficial cross-framework component library that implements the OreUI design system into your project.";
+      ? "非官方粉丝向的 Vanilla DOM 组件库，将 Ore UI 设计系统应用到您的项目中"
+      : "An unofficial Vanilla DOM component library that brings the OreUI design system to your project.";
   const getStartedText = lang === "zh-CN" ? "快速开始" : "Get started";
   const viewComponentsText = lang === "zh-CN" ? "查看组件" : "View components";
   const footerText =
@@ -55,20 +50,6 @@ export function OreHomePage({ lang }: HomePageProps) {
               href="https://github.com/katorlys/OreUI/releases"
             >
               Version {version}
-              <span
-                className="size-3 bg-current"
-                style={{
-                  maskImage: `url(${chevronRightSource})`,
-                  maskPosition: "center",
-                  maskRepeat: "no-repeat",
-                  maskSize: "contain",
-                  WebkitMaskImage: `url(${chevronRightSource})`,
-                  WebkitMaskPosition: "center",
-                  WebkitMaskRepeat: "no-repeat",
-                  WebkitMaskSize: "contain",
-                }}
-                aria-hidden="true"
-              />
             </a>
             <h1
               id="ore-home-title"
@@ -84,25 +65,23 @@ export function OreHomePage({ lang }: HomePageProps) {
               {description}
             </p>
             <div className="mt-4 sm:mt-8 flex gap-3 max-sm:w-full">
-              <Button
-                className="max-sm:w-full"
+              <button
+                className="ore-button max-sm:w-full"
                 type="button"
                 onClick={() => router.push(`${prefix}/docs/getting-started`)}
               >
                 {getStartedText}
-              </Button>
-              <Button
-                className="max-sm:w-full"
+              </button>
+              <button
+                className="ore-button max-sm:w-full"
+                data-color="secondary"
                 type="button"
-                color="secondary"
                 onClick={() => router.push(`${prefix}/docs/overview`)}
               >
                 {viewComponentsText}
-              </Button>
+              </button>
             </div>
           </section>
-
-          <HomeShowcase />
 
           <footer className="mx-auto box-border flex w-full max-w-7xl flex-col items-center justify-center gap-2 px-6 py-8 text-center text-sm text-fd-muted-foreground sm:px-10 md:flex-row">
             <span>{footerText}</span>

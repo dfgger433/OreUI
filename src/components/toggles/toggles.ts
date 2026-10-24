@@ -2,11 +2,12 @@ export type OreToggles = HTMLDivElement;
 
 const states = new Set<OreToggles>();
 const previousRoles = new WeakMap<OreToggles, string | null>();
+const previousInitializedMarkers = new WeakMap<OreToggles, string | null>();
 const previousPalettes = new WeakMap<
   OreToggles,
   Map<HTMLButtonElement, string | null>
 >();
-let observer: MutationObserver | undefined;
+const observers = new WeakMap<OreToggles, MutationObserver>();
 
 function syncTabs(toggles: OreToggles): void {
   const palettes = previousPalettes.get(toggles);
@@ -26,8 +27,17 @@ export function initToggles(toggles: OreToggles): void {
     return;
   }
 
+  const ownerWindow = toggles.ownerDocument.defaultView;
+  if (!ownerWindow) {
+    return;
+  }
+
   states.add(toggles);
   previousRoles.set(toggles, toggles.getAttribute("role"));
+  previousInitializedMarkers.set(
+    toggles,
+    toggles.getAttribute("data-ore-initialized"),
+  );
   previousPalettes.set(
     toggles,
     new Map(
@@ -40,6 +50,16 @@ export function initToggles(toggles: OreToggles): void {
   );
   toggles.dataset.oreInitialized = "toggles";
   toggles.setAttribute("role", "tablist");
+  const mutationObserver = new ownerWindow.MutationObserver((records) => {
+    for (const record of records) {
+      if (record.type === "childList") {
+        initToggles(toggles);
+      }
+    }
+    syncTabs(toggles);
+  });
+  mutationObserver.observe(toggles, { childList: true, subtree: true });
+  observers.set(toggles, mutationObserver);
   syncTabs(toggles);
 }
 
@@ -48,6 +68,8 @@ export function destroyToggles(toggles: OreToggles): void {
     return;
   }
 
+  observers.get(toggles)?.disconnect();
+  observers.delete(toggles);
   const previousRole = previousRoles.get(toggles);
   if (previousRole === null) {
     toggles.removeAttribute("role");
@@ -66,58 +88,24 @@ export function destroyToggles(toggles: OreToggles): void {
   }
   previousRoles.delete(toggles);
   previousPalettes.delete(toggles);
-  delete toggles.dataset.oreInitialized;
+  const previousInitialized = previousInitializedMarkers.get(toggles);
+  if (previousInitialized === null) {
+    toggles.removeAttribute("data-ore-initialized");
+  } else if (previousInitialized !== undefined) {
+    toggles.setAttribute("data-ore-initialized", previousInitialized);
+  }
+  previousInitializedMarkers.delete(toggles);
 }
 
-function destroyTogglesList(root: Node): void {
-  if (root instanceof HTMLDivElement && root.matches(".ore-toggles")) {
-    destroyToggles(root);
-  }
-  if (root instanceof HTMLElement) {
-    for (const toggles of root.querySelectorAll<OreToggles>(".ore-toggles")) {
-      destroyToggles(toggles);
-    }
-  }
-}
-
-export function initTogglesList(root: ParentNode = document): void {
-  if (root instanceof HTMLDivElement && root.matches(".ore-toggles")) {
-    initToggles(root);
+export function initTogglesList(root: ParentNode): void {
+  if (
+    (root as Node).nodeType === 1 &&
+    (root as Element).localName === "div" &&
+    (root as Element).matches(".ore-toggles")
+  ) {
+    initToggles(root as OreToggles);
   }
   for (const toggles of root.querySelectorAll<OreToggles>(".ore-toggles")) {
     initToggles(toggles);
   }
-}
-
-function startObserver(): void {
-  if (typeof document === "undefined" || observer) {
-    return;
-  }
-
-  observer = new MutationObserver((records) => {
-    for (const record of records) {
-      for (const node of record.removedNodes) {
-        destroyTogglesList(node);
-      }
-      for (const node of record.addedNodes) {
-        if (node instanceof HTMLElement) {
-          initTogglesList(node);
-          const toggles =
-            node.parentElement?.closest<OreToggles>(".ore-toggles");
-          if (toggles && states.has(toggles)) {
-            syncTabs(toggles);
-          }
-        }
-      }
-    }
-  });
-  observer.observe(document.documentElement, {
-    childList: true,
-    subtree: true,
-  });
-}
-
-if (typeof document !== "undefined") {
-  startObserver();
-  initTogglesList();
 }

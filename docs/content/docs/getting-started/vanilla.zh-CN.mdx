@@ -31,10 +31,12 @@ bun add oreui-web
   href="https://cdn.jsdelivr.net/npm/oreui-web@latest/dist/styles.css"
 />
 
-<button type="button">Create new world</button>
+<button class="ore-button" type="button">Create new world</button>
 
 <script type="module">
-  import "https://cdn.jsdelivr.net/npm/oreui-web@latest/+esm";
+  import { createOreUIRuntime } from "https://cdn.jsdelivr.net/npm/oreui-web@latest/dist/runtime.js";
+
+  createOreUIRuntime(document).init();
 </script>
 ```
 
@@ -46,14 +48,20 @@ bun add oreui-web
 
 ```js title="script.js"
 import "oreui-web/styles.css";
-import "oreui-web/button";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html title="index.html"
-<button type="button">Create new world</button>
+<button class="ore-button" type="button">Create new world</button>
 ```
 
-<Callout type="info">导入 `oreui-web` 即可使用所有组件。</Callout>
+<Callout type="info">
+  根入口和 browser 入口没有导入副作用。只有在明确需要全局 document observer
+  时才使用 `oreui-web/auto`；根入口不会自动加载它。
+</Callout>
 
 ## 示例
 
@@ -69,7 +77,7 @@ import "oreui-web/button";
 事件：
 
 ```js title="script.js"
-const form = document.querySelector < HTMLFormElement > "#account";
+const form = document.querySelector("#account");
 
 form?.addEventListener("submit", (event) => {
   event.preventDefault();

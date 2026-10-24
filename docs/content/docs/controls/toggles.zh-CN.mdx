@@ -3,16 +3,13 @@ title: Toggles 切换
 description: 在一组 Tab 中进行选择
 ---
 
-import { TogglesStory } from "@/components/stories/toggles.story";
-
-<TogglesStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/toggles";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
@@ -28,131 +25,6 @@ import "oreui-web/toggles";
   </button>
 </div>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { TabButton, Toggles } from "@oreui-web/react/toggles";
-import { useState } from "react";
-
-export function DaylightToggles() {
-  const [value, setValue] = useState("day");
-
-  return (
-    <Toggles aria-label="Daylight cycle">
-      <TabButton selected={value === "day"} onChange={() => setValue("day")}>
-        Day
-      </TabButton>
-      <TabButton
-        selected={value === "night"}
-        onChange={() => setValue("night")}
-      >
-        Night
-      </TabButton>
-      <TabButton
-        selected={value === "always"}
-        onChange={() => setValue("always")}
-      >
-        Always
-      </TabButton>
-    </Toggles>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { TabButton, Toggles } from "@oreui-web/vue";
-
-const value = ref("day");
-</script>
-
-<template>
-  <Toggles aria-label="Daylight cycle"
-    ><TabButton :selected="value === 'day'" @change="value = 'day'"
-      >Day</TabButton
-    ><TabButton :selected="value === 'night'" @change="value = 'night'"
-      >Night</TabButton
-    ><TabButton :selected="value === 'always'" @change="value = 'always'"
-      >Always</TabButton
-    ></Toggles
-  >
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import TabButton from "@oreui-web/svelte/tab-button";
-  import Toggles from "@oreui-web/svelte/toggles";
-
-  let value = $state("day");
-</script>
-
-<Toggles aria-label="Daylight cycle">
-  <TabButton selected={value === "day"} onChange={() => (value = "day")}>Day</TabButton>
-  <TabButton selected={value === "night"} onChange={() => (value = "night")}>Night</TabButton>
-  <TabButton selected={value === "always"} onChange={() => (value = "always")}>Always</TabButton>
-</Toggles>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { createSignal } from "solid-js";
-import { TabButton, Toggles } from "@oreui-web/solid";
-
-export function DaylightToggles() {
-  const [value, setValue] = createSignal("day");
-
-  return (
-    <Toggles aria-label="Daylight cycle">
-      <TabButton selected={value() === "day"} onChange={() => setValue("day")}>
-        Day
-      </TabButton>
-      <TabButton
-        selected={value() === "night"}
-        onChange={() => setValue("night")}
-      >
-        Night
-      </TabButton>
-      <TabButton
-        selected={value() === "always"}
-        onChange={() => setValue("always")}
-      >
-        Always
-      </TabButton>
-    </Toggles>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<div class="ore-toggles" role="tablist" aria-label="Daylight cycle">
-  <button class="ore-tab-button" type="button" role="tab" aria-selected="true">Day</button>
-  <button class="ore-tab-button" type="button" role="tab" aria-selected="false">Night</button>
-  <button class="ore-tab-button" type="button" role="tab" aria-selected="false">Always</button>
-</div>
-
-<script>
-	import "oreui-web/toggles";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## 行为
 

@@ -3,14 +3,8 @@ title: Tag
 description: Display a single-line label.
 ---
 
-import { TagStory } from "@/components/stories/tag.story";
-
-<TagStory />
-
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -18,67 +12,6 @@ import "oreui-web/styles.css";
 ```html
 <span class="ore-tag" data-variant="primary">New</span>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Tag } from "@oreui-web/react/tag";
-
-export function Status() {
-  return <Tag variant="primary">New</Tag>;
-}
-```
-
-    </Tab>
-        <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Tag } from "@oreui-web/vue/tag";
-</script>
-
-<template>
-  <Tag variant="primary">New</Tag>
-</template>
-```
-
-        </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Tag from "@oreui-web/svelte/tag";
-</script>
-
-<Tag variant="primary">New</Tag>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Tag } from "@oreui-web/solid/tag";
-
-export function Status() {
-  return <Tag variant="success">Online</Tag>;
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<span class="ore-tag" data-variant="primary">New</span>
-
-<script>
-  import "oreui-web/styles.css";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## Variants
 

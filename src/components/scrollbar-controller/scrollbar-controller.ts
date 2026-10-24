@@ -7,9 +7,13 @@ interface ScrollbarState {
   customScrollbar: CustomScrollbarState | null;
   managesTabIndex: boolean;
   managedTabIndex: string | null;
+  originalTabIndex: string | null;
+  originalVerticalTrackSize: string;
+  originalHorizontalTrackSize: string;
   mutationObserver: MutationObserver;
   resizeObserver: ResizeObserver;
   tabIndexObserver: MutationObserver;
+  initialized: string | null;
 }
 
 interface CustomScrollbarState {
@@ -22,26 +26,47 @@ interface CustomScrollbarState {
   verticalTrack: HTMLDivElement;
 }
 
-function supportsCustomScrollbar(): boolean {
-  return typeof CSS !== "undefined" && CSS.supports("-moz-appearance", "none");
+type OwnerWindow = Window & {
+  CSS?: {
+    supports: (property: string, value?: string) => boolean;
+  };
+  queueMicrotask: (callback: VoidFunction) => void;
+};
+
+function supportsCustomScrollbar(ownerWindow: Window): boolean {
+  const CSS = (ownerWindow as OwnerWindow).CSS;
+  return (
+    typeof CSS?.supports === "function" &&
+    CSS.supports("-moz-appearance", "none")
+  );
+}
+
+function isHTMLElement(value: unknown): value is HTMLElement {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "nodeType" in value &&
+    (value as Node).nodeType === 1
+  );
 }
 
 function createCustomScrollbar(
   scrollbar: OreScrollbarElement,
 ): CustomScrollbarState {
-  const verticalTrack = document.createElement("div");
+  const ownerDocument = scrollbar.ownerDocument;
+  const verticalTrack = ownerDocument.createElement("div");
   verticalTrack.className = "ore-scrollbar-track ore-scrollbar-track-vertical";
   verticalTrack.setAttribute("aria-hidden", "true");
-  const verticalThumb = document.createElement("div");
+  const verticalThumb = ownerDocument.createElement("div");
   verticalThumb.className = "ore-scrollbar-thumb ore-scrollbar-thumb-vertical";
   verticalThumb.setAttribute("aria-hidden", "true");
   verticalTrack.append(verticalThumb);
 
-  const horizontalTrack = document.createElement("div");
+  const horizontalTrack = ownerDocument.createElement("div");
   horizontalTrack.className =
     "ore-scrollbar-track ore-scrollbar-track-horizontal";
   horizontalTrack.setAttribute("aria-hidden", "true");
-  const horizontalThumb = document.createElement("div");
+  const horizontalThumb = ownerDocument.createElement("div");
   horizontalThumb.className =
     "ore-scrollbar-thumb ore-scrollbar-thumb-horizontal";
   horizontalThumb.setAttribute("aria-hidden", "true");
@@ -67,8 +92,11 @@ function readPixelVariable(
   fallback: number,
 ): number {
   return (
-    Number.parseFloat(getComputedStyle(scrollbar).getPropertyValue(name)) ||
-    fallback
+    Number.parseFloat(
+      scrollbar.ownerDocument.defaultView
+        ?.getComputedStyle(scrollbar)
+        .getPropertyValue(name) ?? "",
+    ) || fallback
   );
 }
 
@@ -178,7 +206,7 @@ function observeScrollbarContent(scrollbar: OreScrollbarElement): void {
 }
 
 function handleScroll(event: Event): void {
-  if (!(event.currentTarget instanceof HTMLElement)) {
+  if (!isHTMLElement(event.currentTarget)) {
     return;
   }
 
@@ -187,10 +215,7 @@ function handleScroll(event: Event): void {
 }
 
 function handlePointerDown(event: PointerEvent): void {
-  if (
-    !(event.currentTarget instanceof HTMLElement) ||
-    !(event.target instanceof HTMLElement)
-  ) {
+  if (!isHTMLElement(event.currentTarget) || !isHTMLElement(event.target)) {
     return;
   }
 
@@ -218,7 +243,7 @@ function handlePointerDown(event: PointerEvent): void {
 }
 
 function handlePointerMove(event: PointerEvent): void {
-  if (!(event.currentTarget instanceof HTMLElement)) {
+  if (!isHTMLElement(event.currentTarget)) {
     return;
   }
 
@@ -260,7 +285,7 @@ function handlePointerMove(event: PointerEvent): void {
 }
 
 function handlePointerEnd(event: PointerEvent): void {
-  if (!(event.currentTarget instanceof HTMLElement)) {
+  if (!isHTMLElement(event.currentTarget)) {
     return;
   }
 
@@ -272,7 +297,7 @@ function handlePointerEnd(event: PointerEvent): void {
 }
 
 function handleKeydown(event: KeyboardEvent): void {
-  if (!(event.currentTarget instanceof HTMLElement)) {
+  if (!isHTMLElement(event.currentTarget)) {
     return;
   }
 
@@ -320,10 +345,28 @@ export function initScrollbar(scrollbar: OreScrollbarElement): void {
     return;
   }
 
+  const ownerWindow = scrollbar.ownerDocument.defaultView;
+  if (!ownerWindow) {
+    return;
+  }
+  const MutationObserver = ownerWindow.MutationObserver;
+  const ResizeObserver = ownerWindow.ResizeObserver;
+  if (!MutationObserver || !ResizeObserver) {
+    return;
+  }
+
   const state: ScrollbarState = {
     customScrollbar: null,
     managesTabIndex: !scrollbar.hasAttribute("tabindex"),
     managedTabIndex: null,
+    originalTabIndex: scrollbar.getAttribute("tabindex"),
+    originalVerticalTrackSize: scrollbar.style.getPropertyValue(
+      "--ore-scrollbar-vertical-track-size",
+    ),
+    originalHorizontalTrackSize: scrollbar.style.getPropertyValue(
+      "--ore-scrollbar-horizontal-track-size",
+    ),
+    initialized: scrollbar.getAttribute("data-ore-initialized"),
     mutationObserver: new MutationObserver(() => {
       observeScrollbarContent(scrollbar);
       syncScrollbar(scrollbar);
@@ -338,7 +381,7 @@ export function initScrollbar(scrollbar: OreScrollbarElement): void {
 
   states.set(scrollbar, state);
   scrollbar.dataset.oreInitialized = "scrollbar";
-  if (supportsCustomScrollbar()) {
+  if (supportsCustomScrollbar(ownerWindow)) {
     state.customScrollbar = createCustomScrollbar(scrollbar);
   }
   scrollbar.addEventListener("keydown", handleKeydown);
@@ -357,7 +400,7 @@ export function initScrollbar(scrollbar: OreScrollbarElement): void {
   });
   observeScrollbarContent(scrollbar);
   syncScrollbar(scrollbar);
-  queueMicrotask(() => syncScrollbar(scrollbar));
+  (ownerWindow as OwnerWindow).queueMicrotask(() => syncScrollbar(scrollbar));
 }
 
 export function destroyScrollbar(scrollbar: OreScrollbarElement): void {
@@ -378,14 +421,37 @@ export function destroyScrollbar(scrollbar: OreScrollbarElement): void {
   state.tabIndexObserver.disconnect();
   state.customScrollbar?.verticalTrack.remove();
   state.customScrollbar?.horizontalTrack.remove();
-  scrollbar.style.removeProperty("--ore-scrollbar-vertical-track-size");
-  scrollbar.style.removeProperty("--ore-scrollbar-horizontal-track-size");
-  delete scrollbar.dataset.oreInitialized;
+  if (state.originalTabIndex === null) {
+    scrollbar.removeAttribute("tabindex");
+  } else {
+    scrollbar.setAttribute("tabindex", state.originalTabIndex);
+  }
+  if (state.originalVerticalTrackSize) {
+    scrollbar.style.setProperty(
+      "--ore-scrollbar-vertical-track-size",
+      state.originalVerticalTrackSize,
+    );
+  } else {
+    scrollbar.style.removeProperty("--ore-scrollbar-vertical-track-size");
+  }
+  if (state.originalHorizontalTrackSize) {
+    scrollbar.style.setProperty(
+      "--ore-scrollbar-horizontal-track-size",
+      state.originalHorizontalTrackSize,
+    );
+  } else {
+    scrollbar.style.removeProperty("--ore-scrollbar-horizontal-track-size");
+  }
+  if (state.initialized === null) {
+    scrollbar.removeAttribute("data-ore-initialized");
+  } else {
+    scrollbar.setAttribute("data-ore-initialized", state.initialized);
+  }
   states.delete(scrollbar);
 }
 
-export function initScrollbars(root: ParentNode = document): void {
-  if (root instanceof HTMLElement && root.matches(scrollbarSelector)) {
+export function initScrollbars(root: ParentNode): void {
+  if (isHTMLElement(root) && root.matches(scrollbarSelector)) {
     initScrollbar(root);
   }
 

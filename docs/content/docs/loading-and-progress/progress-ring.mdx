@@ -3,16 +3,13 @@ title: Progress Ring
 description: Show determinate progress.
 ---
 
-import { ProgressRingStory } from "@/components/stories/progress-ring.story";
-
-<ProgressRingStory />
-
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/progress-ring";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
@@ -26,99 +23,6 @@ import "oreui-web/progress-ring";
   aria-valuenow="40"
 ></span>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { ProgressRing } from "@oreui-web/react/progress-ring";
-
-export function LoadingWorlds() {
-  return (
-    <ProgressRing
-      style={{ "--ore-progress-ring-frame": 6 }}
-      role="progressbar"
-      aria-label="World generation progress"
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={40}
-    />
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ProgressRing } from "@oreui-web/vue/progress-ring";
-</script>
-
-<template>
-  <ProgressRing
-    style="--ore-progress-ring-frame: 6"
-    role="progressbar"
-    aria-label="World generation progress"
-    aria-valuemin="0"
-    aria-valuemax="100"
-    aria-valuenow="40"
-  />
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import ProgressRing from "@oreui-web/svelte/progress-ring";
-</script>
-
-<ProgressRing
-  style="--ore-progress-ring-frame: 6"
-  role="progressbar"
-  aria-label="World generation progress"
-  aria-valuemin="0"
-  aria-valuemax="100"
-  aria-valuenow="40"
-/>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { ProgressRing } from "@oreui-web/solid/progress-ring";
-
-export function LoadingProgress() {
-  return (
-    <ProgressRing
-      style={{ "--ore-progress-ring-frame": 10 }}
-      role="progressbar"
-      aria-label="Loading world"
-      aria-valuemin={0}
-      aria-valuemax={100}
-      aria-valuenow={64}
-    />
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<span class="ore-progress-ring" style="--ore-progress-ring-frame: 6" role="progressbar" aria-label="World generation progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"></span>
-
-<script>
-	import "oreui-web/progress-ring";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## Size and color
 

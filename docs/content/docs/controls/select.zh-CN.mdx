@@ -3,14 +3,8 @@ title: Select 选择器
 description: 从原生菜单中选择一个选项
 ---
 
-import { SelectStory } from "@/components/stories/select.story";
-
-<SelectStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -24,100 +18,6 @@ import "oreui-web/styles.css";
   <option value="spectator" disabled>Spectator</option>
 </select>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Select } from "@oreui-web/react/select";
-import { useState } from "react";
-
-export function GameModeSelect() {
-  const [value, setValue] = useState("creative");
-
-  return (
-    <Select
-      value={value}
-      onChange={(event) => setValue(event.currentTarget.value)}
-    >
-      <option value="survival">Survival</option>
-      <option value="creative">Creative</option>
-    </Select>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Select } from "@oreui-web/vue/select";
-
-const value = ref("creative");
-</script>
-
-<template>
-  <Select v-model="value">
-    <option value="survival">Survival</option>
-    <option value="creative">Creative</option>
-  </Select>
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Select from "@oreui-web/svelte/select";
-
-  let value = $state("creative");
-</script>
-
-<Select bind:value>
-  <option value="survival">Survival</option>
-  <option value="creative">Creative</option>
-</Select>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { createSignal } from "solid-js";
-import { Select } from "@oreui-web/solid/select";
-
-export function GameModeSelect() {
-  const [value, setValue] = createSignal("creative");
-
-  return (
-    <Select value={value()} onValueChange={setValue}>
-      <option value="survival">Survival</option>
-      <option value="creative">Creative</option>
-    </Select>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<select class="ore-select" name="game-mode">
-  <option value="survival">Survival</option>
-  <option value="creative" selected>Creative</option>
-</select>
-
-<style is:global>
-  @import "oreui-web/styles.css";
-</style>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## 原生行为
 

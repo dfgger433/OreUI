@@ -3,14 +3,8 @@ title: Textfield
 description: Enter and edit text.
 ---
 
-import { TextfieldStory } from "@/components/stories/textfield.story";
-
-<TextfieldStory />
-
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -29,117 +23,6 @@ import "oreui-web/styles.css";
   <span class="ore-textfield-description">Shown to other players</span>
 </div>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Textfield } from "@oreui-web/react/textfield";
-import { useState } from "react";
-
-export function WorldNameField() {
-  const [value, setValue] = useState("");
-
-  return (
-    <Textfield
-      name="world"
-      label="World name"
-      description="Shown to other players"
-      placeholder="New World"
-      value={value}
-      onInput={(event) => {
-        const field = event.target as HTMLElement & { value: string };
-        setValue(field.value);
-      }}
-    />
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Textfield } from "@oreui-web/vue/textfield";
-
-const value = ref("");
-</script>
-
-<template>
-  <Textfield
-    v-model="value"
-    name="world"
-    label="World name"
-    placeholder="New World"
-    description="Shown to other players"
-  />
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Textfield from "@oreui-web/svelte/textfield";
-
-  let value = $state("");
-</script>
-
-<Textfield
-  bind:value
-  name="world"
-  label="World name"
-  description="Shown to other players"
-  placeholder="New World"
-/>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { createSignal } from "solid-js";
-import { Textfield } from "@oreui-web/solid/textfield";
-
-export function WorldNameField() {
-  const [value, setValue] = createSignal("");
-
-  return (
-    <Textfield
-      value={value()}
-      onValueChange={setValue}
-      name="world"
-      label="World name"
-      description="Shown to other players"
-      placeholder="New World"
-    />
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<div class="ore-textfield">
-  <label class="ore-textfield-label" for="world">World name</label>
-  <span class="ore-textfield-control">
-    <input class="ore-textfield-input" id="world" name="world" placeholder="New World" />
-  </span>
-  <span class="ore-textfield-description">Shown to other players</span>
-</div>
-
-<script>
-	import "oreui-web/styles.css";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## Validation
 
@@ -181,9 +64,7 @@ Use native input constraints for validation. In vanilla HTML, set a custom messa
 Vanilla Textfield uses the native `input`, `change`, `focus`, `blur`, and form events from the
 `<input>`. Its value is the input's native `value`; no wrapper state or custom event is required.
 
-The React, Vue, Svelte, and Solid wrappers keep the same native input behavior. They add only
-framework conveniences: React forwards `onInput` and `ref`, Vue supports `v-model`, Svelte
-supports `bind:value`, and Solid supports `onValueChange`.
+Use the native input events and properties directly. The Vanilla core does not add wrapper state or framework-specific event names.
 
 ## API
 

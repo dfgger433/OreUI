@@ -47,9 +47,18 @@
 }
 
 :where(
-  .ore-dropdown:has(> .ore-dropdown-menu:popover-open) > .ore-dropdown-trigger
+  .ore-dropdown:has(> .ore-dropdown-menu[data-ore-fallback-open])
+    > .ore-dropdown-trigger
 )::after {
   mask-image: url("../../assets/icons/chevron-up.svg");
+}
+
+@supports selector(:popover-open) {
+  :where(
+    .ore-dropdown:has(> .ore-dropdown-menu:popover-open) > .ore-dropdown-trigger
+  )::after {
+    mask-image: url("../../assets/icons/chevron-up.svg");
+  }
 }
 
 :where(.ore-dropdown > .ore-dropdown-menu) {
@@ -96,8 +105,17 @@
   font-family: var(--ore-font-body);
 }
 
-:where(.ore-dropdown > .ore-dropdown-menu:not(:popover-open)) {
+:where(.ore-dropdown > .ore-dropdown-menu[hidden]) {
   display: none;
+}
+
+@supports selector(:popover-open) {
+  :where(
+    .ore-dropdown
+      > .ore-dropdown-menu:not(:popover-open):not([data-ore-fallback-open])
+  ) {
+    display: none;
+  }
 }
 
 :where(.ore-dropdown .ore-dropdown-item) {
@@ -188,8 +206,10 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  :where(.ore-dropdown > .ore-dropdown-menu:popover-open) {
-    animation: ore-dropdown-show var(--ore-motion-fast) steps(2, jump-none);
+  @supports selector(:popover-open) {
+    :where(.ore-dropdown > .ore-dropdown-menu:popover-open) {
+      animation: ore-dropdown-show var(--ore-motion-fast) steps(2, jump-none);
+    }
   }
 }
 

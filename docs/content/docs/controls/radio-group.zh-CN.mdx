@@ -3,14 +3,8 @@ title: Radio Group 单选按钮组
 description: 在单选按钮组中选择一个选项
 ---
 
-import { RadioGroupStory } from "@/components/stories/radio-group.story";
-
-<RadioGroupStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```html
 <fieldset class="ore-radio-group">
   <legend>World type</legend>
@@ -28,105 +22,6 @@ import { RadioGroupStory } from "@/components/stories/radio-group.story";
   </label>
 </fieldset>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Radio, RadioGroup } from "@oreui-web/react/radio-group";
-
-export function WorldType() {
-  return (
-    <RadioGroup>
-      <legend>World type</legend>
-      <Radio name="world" value="survival" checked>
-        Survival
-      </Radio>
-      <Radio name="world" value="creative">
-        Creative
-      </Radio>
-      <Radio name="world" value="hardcore" disabled>
-        Hardcore
-      </Radio>
-    </RadioGroup>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Radio, RadioGroup } from "@oreui-web/vue";
-</script>
-
-<template>
-  <RadioGroup
-    ><legend>World type</legend>
-    <Radio name="world" value="survival" checked>Survival</Radio
-    ><Radio name="world" value="creative">Creative</Radio
-    ><Radio name="world" value="hardcore" disabled>Hardcore</Radio></RadioGroup
-  >
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Radio from "@oreui-web/svelte/radio";
-  import RadioGroup from "@oreui-web/svelte/radio-group";
-</script>
-
-<RadioGroup>
-  <legend>World type</legend>
-  <Radio name="world" value="survival" checked>Survival</Radio>
-  <Radio name="world" value="creative">Creative</Radio>
-  <Radio name="world" value="hardcore" disabled>Hardcore</Radio>
-</RadioGroup>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Radio, RadioGroup } from "@oreui-web/solid";
-
-export function WorldType() {
-  return (
-    <RadioGroup>
-      <legend>World type</legend>
-      <Radio name="world" value="survival" checked>
-        Survival
-      </Radio>
-      <Radio name="world" value="creative">
-        Creative
-      </Radio>
-      <Radio name="world" value="hardcore" disabled>
-        Hardcore
-      </Radio>
-    </RadioGroup>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<fieldset class="ore-radio-group">
-  <legend>World type</legend>
-  <label><input type="radio" name="world" value="survival" checked /> Survival</label>
-  <label><input type="radio" name="world" value="creative" /> Creative</label>
-  <label><input type="radio" name="world" value="hardcore" disabled /> Hardcore</label>
-</fieldset>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## 行为
 

@@ -1,8 +1,6 @@
 import { resolve } from "node:path";
 
-import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { defineConfig } from "vite";
-import solid from "vite-plugin-solid";
 
 import { getComponents } from "./scripts/components.js";
 
@@ -28,18 +26,16 @@ export default defineConfig({
       },
     ],
   },
-  plugins: [
-    svelte(),
-    solid({
-      include: ["demo/solid.tsx", "packages/solid/src/**/*.tsx"],
-    }),
-  ],
   build: {
     outDir: resolve(root, "dist"),
     emptyOutDir: true,
     lib: {
       entry: {
         index: resolve(root, "src/index.ts"),
+        runtime: resolve(root, "src/runtime/runtime.ts"),
+        "runtime/runtime": resolve(root, "src/runtime/runtime.ts"),
+        auto: resolve(root, "src/auto.ts"),
+        browser: resolve(root, "src/browser.ts"),
         ...components,
       },
       formats: ["es"],

@@ -3,82 +3,18 @@ title: Spinner
 description: Show an indeterminate loading state.
 ---
 
-import { SpinnerStory } from "@/components/stories/spinner.story";
-
-<SpinnerStory />
-
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/spinner";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
 <span class="ore-spinner" role="status" aria-label="Loading worlds"></span>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Spinner } from "@oreui-web/react/spinner";
-
-export function LoadingWorlds() {
-  return <Spinner aria-label="Loading worlds" />;
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Spinner } from "@oreui-web/vue/spinner";
-</script>
-
-<template>
-  <Spinner aria-label="Loading worlds" />
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Spinner from "@oreui-web/svelte/spinner";
-</script>
-
-<Spinner aria-label="Loading worlds" />
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Spinner } from "@oreui-web/solid/spinner";
-
-export function LoadingSpinner() {
-  return <Spinner aria-label="Loading" />;
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<span class="ore-spinner" role="status" aria-label="Loading worlds"></span>
-
-<script>
-	import "oreui-web/spinner";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## Size and color
 
@@ -100,5 +36,5 @@ Hide the Spinner from assistive technology when nearby text already describes th
 
 ## Accessibility
 
-Framework Spinner components use `role="status"` and the default label `Loading`. In native HTML, provide an `aria-label` that describes the loading state. When it is decorative, use `aria-hidden="true"`.
+In HTML, provide an `aria-label` that describes the loading state. When it is decorative, use `aria-hidden="true"`.
 Animation stops when reduced motion is enabled.

@@ -3,16 +3,13 @@ title: Container
 description: Group content inside a container.
 ---
 
-import { ContainerStory } from "@/components/stories/container.story";
-
-<ContainerStory />
-
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/container";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
@@ -21,81 +18,6 @@ import "oreui-web/container";
   <p>Choose how players join your world.</p>
 </div>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Container } from "@oreui-web/react/container";
-
-export function WorldSettings() {
-  return (
-    <Container variant="dark">
-      <h2>World settings</h2>
-      <p>Choose how players join your world.</p>
-    </Container>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Container } from "@oreui-web/vue/container";
-</script>
-
-<template>
-  <Container variant="dark"
-    ><h2>World settings</h2>
-    <p>Choose how players join your world.</p></Container
-  >
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Container from "@oreui-web/svelte/container";
-</script>
-
-<Container variant="dark">
-  <h2>World settings</h2>
-  <p>Choose how players join your world.</p>
-</Container>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Container } from "@oreui-web/solid/container";
-
-export function Panel() {
-  return <Container variant="dark">World settings</Container>;
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<div class="ore-container" data-variant="dark">
-	<h2>World settings</h2>
-	<p>Choose how players join your world.</p>
-</div>
-
-<script>
-	import "oreui-web/container";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## Variants
 

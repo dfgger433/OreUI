@@ -3,14 +3,8 @@ title: Accordion
 description: Show and hide a section of text.
 ---
 
-import { AccordionStory } from "@/components/stories/accordion.story";
-
-<AccordionStory />
-
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -25,104 +19,6 @@ import "oreui-web/styles.css";
   </div>
 </details>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Accordion } from "@oreui-web/react/accordion";
-
-export function Realms() {
-  return (
-    <Accordion>
-      <summary>
-        <span className="ore-accordion-title">What is Realms?</span>
-      </summary>
-      <div className="ore-accordion-content">
-        Realms are private, cloud-hosted worlds where you can play with friends.
-      </div>
-    </Accordion>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Accordion } from "@oreui-web/vue";
-</script>
-
-<template>
-  <Accordion>
-    <summary>
-      <span class="ore-accordion-title">What is Realms?</span>
-    </summary>
-    <div class="ore-accordion-content">
-      Realms are private, cloud-hosted worlds where you can play with friends.
-    </div>
-  </Accordion>
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Accordion from "@oreui-web/svelte/accordion";
-</script>
-
-<Accordion>
-  <summary>
-    <span class="ore-accordion-title">What is Realms?</span>
-  </summary>
-  <div class="ore-accordion-content">
-    Realms are private, cloud-hosted worlds where you can play with friends.
-  </div>
-</Accordion>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Accordion } from "@oreui-web/solid";
-
-export function Details() {
-  return (
-    <Accordion>
-      <summary>
-        <span class="ore-accordion-title">World details</span>
-      </summary>
-      <div class="ore-accordion-content">World details</div>
-    </Accordion>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<details class="ore-accordion">
-  <summary>
-		<span class="ore-accordion-title">What is Realms?</span>
-  </summary>
-	<div class="ore-accordion-content">
-		Realms are private, cloud-hosted worlds where you can play with friends.
-	</div>
-</details>
-
-<script>
-  import "oreui-web/styles.css";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## Initial state
 
@@ -151,7 +47,7 @@ accordion.addEventListener("toggle", (event) => {
 });
 ```
 
-In React, use `onToggle`.
+Use the native `toggle` event.
 
 ## API
 

@@ -3,14 +3,8 @@ title: Checkbox 复选框
 description: 勾选一个选项
 ---
 
-import { CheckboxStory } from "@/components/stories/checkbox.story";
-
-<CheckboxStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -21,104 +15,6 @@ import "oreui-web/styles.css";
   Receive updates
 </label>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Checkbox } from "@oreui-web/react/checkbox";
-import { useState } from "react";
-
-export function UpdatesCheckbox() {
-  const [checked, setChecked] = useState(false);
-
-  return (
-    <Checkbox
-      checked={checked}
-      name="updates"
-      value="yes"
-      onChange={(event) => {
-        setChecked(event.currentTarget.checked);
-      }}
-    >
-      Receive updates
-    </Checkbox>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Checkbox } from "@oreui-web/vue/checkbox";
-const checked = ref(false);
-</script>
-
-<template>
-  <Checkbox v-model="checked" name="updates" value="yes"
-    >Receive updates</Checkbox
-  >
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Checkbox from "@oreui-web/svelte/checkbox";
-
-  let checked = $state(false);
-</script>
-
-<Checkbox bind:checked name="updates" value="yes">
-  Receive updates
-</Checkbox>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { createSignal } from "solid-js";
-import { Checkbox } from "@oreui-web/solid/checkbox";
-
-export function UpdatesCheckbox() {
-  const [checked, setChecked] = createSignal(false);
-
-  return (
-    <Checkbox
-      checked={checked()}
-      onCheckedChange={setChecked}
-      name="updates"
-      value="yes"
-    >
-      Receive updates
-    </Checkbox>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<label>
-  <input class="ore-checkbox" type="checkbox" name="updates" value="yes" />
-  Receive updates
-</label>
-
-<style is:global>
-  @import "oreui-web/styles.css";
-</style>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## 颜色
 

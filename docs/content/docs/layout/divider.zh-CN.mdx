@@ -3,14 +3,8 @@ title: Divider 分割线
 description: 分隔区块内容
 ---
 
-import { DividerStory } from "@/components/stories/divider.story";
-
-<DividerStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -18,67 +12,6 @@ import "oreui-web/styles.css";
 ```html
 <hr class="ore-divider" />
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Divider } from "@oreui-web/react/divider";
-
-export function SettingsDivider() {
-  return <Divider />;
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Divider } from "@oreui-web/vue/divider";
-</script>
-
-<template>
-  <Divider />
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Divider from "@oreui-web/svelte/divider";
-</script>
-
-<Divider />
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Divider } from "@oreui-web/solid/divider";
-
-export function Sections() {
-  return <Divider />;
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<hr class="ore-divider" />
-
-<script>
-  import "oreui-web/styles.css";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 Divider 默认填满可用宽度。使用 `ore-divider` class 或普通 CSS 控制宽度和周围间距。
 

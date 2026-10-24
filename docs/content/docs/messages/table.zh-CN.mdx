@@ -3,16 +3,13 @@ title: Table 表格
 description: 用行和列呈现数据
 ---
 
-import { TableStory } from "@/components/stories/table.story";
-
-<TableStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/table";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
@@ -41,145 +38,6 @@ import "oreui-web/table";
 </div>
 ```
 
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Table } from "@oreui-web/react/table";
-
-export function WorldsTable() {
-  return (
-    <Table variant="striped">
-      <table>
-        <caption>Available worlds</caption>
-        <thead>
-          <tr>
-            <th scope="col">World</th>
-            <th scope="col">Players</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Mountains</th>
-            <td>4 / 10</td>
-          </tr>
-          <tr>
-            <th scope="row">Village</th>
-            <td>8 / 20</td>
-          </tr>
-        </tbody>
-      </table>
-    </Table>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Table } from "@oreui-web/vue/table";
-</script>
-<template>
-  <Table variant="striped"
-    ><table>
-      <caption>
-        Available worlds
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col">World</th>
-          <th scope="col">Players</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">Mountains</th>
-          <td>4 / 10</td>
-        </tr>
-        <tr>
-          <th scope="row">Village</th>
-          <td>8 / 20</td>
-        </tr>
-      </tbody>
-    </table></Table
-  >
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Table from "@oreui-web/svelte/table";
-</script>
-
-<Table variant="striped">
-  <table>
-    <caption>Available worlds</caption>
-    <thead>
-      <tr><th scope="col">World</th><th scope="col">Players</th></tr>
-    </thead>
-    <tbody>
-      <tr><th scope="row">Mountains</th><td>4 / 10</td></tr>
-      <tr><th scope="row">Village</th><td>8 / 20</td></tr>
-    </tbody>
-  </table>
-</Table>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Table } from "@oreui-web/solid/table";
-
-export function PlayersTable() {
-  return (
-    <Table variant="striped">
-      <table>
-        <thead>
-          <tr>
-            <th>Player</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Alex</td>
-          </tr>
-        </tbody>
-      </table>
-    </Table>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<div class="ore-table ore-scrollbar" data-variant="striped">
-	<table>
-		<caption>Available worlds</caption>
-		<thead><tr><th scope="col">World</th><th scope="col">Players</th></tr></thead>
-		<tbody>
-			<tr><th scope="row">Mountains</th><td>4 / 10</td></tr>
-			<tr><th scope="row">Village</th><td>8 / 20</td></tr>
-		</tbody>
-	</table>
-</div>
-
-<script>
-	import "oreui-web/table";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
-
 ## 排序
 
 在带有 `aria-sort` 的表头中放置一个带有 `.ore-table-sort` 的按钮。其 `value` 值用于标识列。
@@ -201,7 +59,7 @@ table.addEventListener("sort", (event) => {
 });
 ```
 
-对于 React，请使用 `onSort`。
+请使用原生控件事件，并直接读取当前排序状态。
 
 ## API
 

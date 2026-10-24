@@ -3,16 +3,13 @@ title: Scrollbar 滚动条
 description: 为可滚动内容添加滚动条
 ---
 
-import { ScrollbarStory } from "@/components/stories/scrollbar.story";
-
-<ScrollbarStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/scrollbar";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
@@ -23,87 +20,9 @@ import "oreui-web/scrollbar";
 </div>
 ```
 
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Scrollbar } from "@oreui-web/react/scrollbar";
-
-export function WorldList() {
-  return (
-    <Scrollbar aria-label="World list" style={{ maxHeight: "12rem" }}>
-      <div>World 1</div>
-      <div>World 2</div>
-      <div>World 3</div>
-    </Scrollbar>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Scrollbar } from "@oreui-web/vue/scrollbar";
-</script>
-<template>
-  <Scrollbar aria-label="World list" style="max-height: 12rem"
-    ><div>World 1</div>
-    <div>World 2</div>
-    <div>World 3</div></Scrollbar
-  >
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Scrollbar from "@oreui-web/svelte/scrollbar";
-</script>
-
-<Scrollbar aria-label="World list" style="max-height: 12rem;">
-  <div>World 1</div>
-  <div>World 2</div>
-  <div>World 3</div>
-</Scrollbar>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Scrollbar } from "@oreui-web/solid/scrollbar";
-
-export function ScrollableContent() {
-  return <Scrollbar style={{ height: "12rem" }}>Scrollable content</Scrollbar>;
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<div class="ore-scrollbar" aria-label="World list" style="max-height: 12rem;">
-	<div>World 1</div>
-	<div>World 2</div>
-	<div>World 3</div>
-</div>
-
-<script>
-  import "oreui-web/scrollbar";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
-
 ## 原生滚动
 
-将 `.ore-scrollbar` 应用于真实的 overflow 容器。滚轮、触摸惯性和滚动位置继续绑定到这个原生容器。可选的 `oreui-web/scrollbar` controller 根据实际溢出管理 `tabindex`、统一各浏览器的键盘滚动，并提供 Firefox 视觉 fallback。
+将 `.ore-scrollbar` 应用于真实的 overflow 容器。滚轮、触摸惯性和滚动位置继续绑定到这个原生容器。可选的 runtime scrollbar controller 根据实际溢出管理 `tabindex`、统一各浏览器的键盘滚动，并提供 Firefox 视觉 fallback。
 
 ```html
 <div class="ore-scrollbar" style="max-height: 12rem; overflow: auto;">

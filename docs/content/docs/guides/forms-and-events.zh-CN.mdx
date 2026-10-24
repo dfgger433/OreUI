@@ -30,9 +30,9 @@ form?.addEventListener("submit", (event) => {
 ## 事件
 
 ```ts
-import type { OreDropdownChangeDetail } from "oreui-web/dropdown";
+import type { OreDropdownChangeDetail } from "oreui-web";
 
-const dropdown = document.querySelector("ore-dropdown");
+const dropdown = document.querySelector(".ore-dropdown");
 
 dropdown?.addEventListener("change", (event) => {
   const detail = (event as CustomEvent<OreDropdownChangeDetail>).detail;

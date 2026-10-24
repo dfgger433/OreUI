@@ -11,6 +11,8 @@ export {
   type OreContainerVariant,
 } from "./components/container/container.js";
 export {
+  destroyTable,
+  destroyTables,
   initTable,
   initTables,
   type OreTableSortDetail,
@@ -25,7 +27,12 @@ export {
   type OreDropdownVariant,
 } from "./components/dropdown/dropdown.js";
 export type { OreIconButtonElement } from "./components/icon-button/icon-button.js";
-export { initModals, type OreModalElement } from "./components/modal/modal.js";
+export {
+  destroyModal,
+  destroyModals,
+  initModals,
+  type OreModalElement,
+} from "./components/modal/modal.js";
 export { type OreNavbarElement } from "./components/navbar/navbar.js";
 export {
   closeToast,
@@ -47,6 +54,8 @@ export {
   type OreScrollbarElement,
 } from "./components/scrollbar/scrollbar.js";
 export {
+  destroySlider,
+  destroySliders,
   initSliders,
   syncSlider,
   type OreSliderColor,
@@ -84,3 +93,10 @@ export {
   type OreToggles,
 } from "./components/toggles/toggles.js";
 export type OreElement = HTMLElement;
+
+export {
+  createOreUIRuntime,
+  type OreUIRoot,
+  type OreUIRuntime,
+  type OreUIRuntimeOptions,
+} from "./runtime/runtime.js";

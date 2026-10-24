@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     default: "OreUI",
     template: "%s | OreUI",
   },
-  description: "Unofficial Ore UI cross-framework component library.",
+  description: "Unofficial Ore UI Vanilla DOM component library.",
   icons: {
     apple: new URL("favicon/apple-touch-icon.png", metadataBase),
   },

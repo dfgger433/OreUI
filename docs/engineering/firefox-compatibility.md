@@ -20,22 +20,15 @@ Last updated: 2026-10-22
 
 ## Current implementation map
 
-The current source separates the scrollbar controller from the Vanilla automatic
-entry point. The controller owns overlay creation, sizing, scroll synchronization,
-keyboard handling, pointer capture/dragging, and teardown:
+The current source separates the scrollbar controller from the explicit Vanilla
+runtime. The controller owns overlay creation, sizing, scroll synchronization,
+keyboard handling, pointer capture/dragging, and teardown. The runtime decides
+which owned root is scanned and whether dynamic observation is enabled:
 
 - Controller: [`scrollbar-controller.ts`](../../src/components/scrollbar-controller/scrollbar-controller.ts)
-- Vanilla automatic entry: [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts)
+- Explicit runtime: [`runtime.ts`](../../src/runtime/runtime.ts)
+- Component entry: [`scrollbar.ts`](../../src/components/scrollbar/scrollbar.ts)
 - Shared CSS and Firefox/Chromium feature gates: [`scrollbar.css`](../../src/components/scrollbar/scrollbar.css)
-
-The React, Vue, Svelte, and Solid wrappers now initialize the controller from
-their mount lifecycle and destroy it during unmount. This avoids mutating the
-server-rendered subtree before hydration:
-
-- React: [`scrollbar.ts`](../../packages/react/src/components/scrollbar.ts)
-- Vue: [`scrollbar.ts`](../../packages/vue/src/components/scrollbar.ts)
-- Svelte: [`scrollbar.svelte`](../../packages/svelte/src/components/scrollbar.svelte)
-- Solid: [`scrollbar.tsx`](../../packages/solid/src/components/scrollbar.tsx)
 
 The controller still uses the Firefox `CSS.supports("-moz-appearance", "none")`
 gate and the CSS `@supports` gate described by the Scrollbar page. The current
@@ -208,13 +201,12 @@ This is limited to these three pages and is not a whole-site error-free claim.
 
 ## SSR and hydration fix record (three-page acceptance)
 
-React #418 was traced to the wrapper/automatic-entry split: the old automatic
-Vanilla entry could insert controller-owned overlay nodes into a server-rendered
-`.ore-scrollbar` subtree before the framework hydrated it. The current change
-keeps the controller in `src/components/scrollbar-controller/scrollbar-controller.ts`,
-leaves automatic discovery in the Vanilla-only
-`src/components/scrollbar/scrollbar.ts` entry, and moves the React, Vue, Svelte,
-and Solid wrappers to mount lifecycle initialization with unmount cleanup.
+React #418 was traced to the wrapper/global-entry split: a document-wide
+Vanilla observer could insert controller-owned overlay nodes into a server-rendered
+`.ore-scrollbar` subtree before hydration. The current change keeps the controller
+in `src/components/scrollbar-controller/scrollbar-controller.ts` and makes root
+initialization explicit through `createOreUIRuntime(root)`. Hosts own the root,
+choose whether to observe dynamic changes, and call `destroy()` during teardown.
 
 Core build/typecheck, `docs:typecheck`, and `docs:build` have passed. The three
 listed real documentation pages also passed HTTP 200, display/hydration,

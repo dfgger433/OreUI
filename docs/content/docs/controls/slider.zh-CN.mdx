@@ -3,16 +3,13 @@ title: Slider 滑块
 description: 在范围内用滑块选取数值
 ---
 
-import { SliderStory } from "@/components/stories/slider.story";
-
-<SliderStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/slider";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
@@ -27,112 +24,6 @@ import "oreui-web/slider";
   aria-label="Render distance"
 />
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Slider } from "@oreui-web/react/slider";
-import { useState } from "react";
-
-export function RenderDistanceSlider() {
-  const [value, setValue] = useState(12);
-
-  return (
-    <Slider
-      aria-label="Render distance"
-      min={2}
-      max={32}
-      step={1}
-      value={value}
-      onInput={(event) => {
-        setValue(event.currentTarget.valueAsNumber);
-      }}
-    />
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Slider } from "@oreui-web/vue/slider";
-const value = ref(12);
-</script>
-
-<template>
-  <Slider
-    v-model="value"
-    name="distance"
-    aria-label="Render distance"
-    :min="2"
-    :max="32"
-    :step="1"
-  />
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Slider from "@oreui-web/svelte/slider";
-
-  let value = $state(12);
-</script>
-
-<Slider
-  bind:value
-  name="distance"
-  min={2}
-  max={32}
-  step={1}
-  aria-label="Render distance"
-/>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { createSignal } from "solid-js";
-import { Slider } from "@oreui-web/solid/slider";
-
-export function RenderDistanceSlider() {
-  const [value, setValue] = createSignal(12);
-
-  return (
-    <Slider
-      value={value()}
-      onValueChange={setValue}
-      name="distance"
-      min={2}
-      max={32}
-      step={1}
-      aria-label="Render distance"
-    />
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<input type="range" name="distance" min="2" max="32" step="1" value="12" aria-label="Render distance" />
-
-<script>
-	import "oreui-web/slider";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## 变体
 

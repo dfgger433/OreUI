@@ -28,9 +28,12 @@
   }
 
   :where(.ore-scrollbar[data-ore-initialized="scrollbar"]) {
-    position: relative;
     scrollbar-color: transparent transparent;
     scrollbar-width: none;
+  }
+
+  :where(.ore-scrollbar:not([popover])[data-ore-initialized="scrollbar"]) {
+    position: relative;
   }
 
   :where(.ore-scrollbar[data-ore-initialized="scrollbar"])::-webkit-scrollbar {

@@ -3,109 +3,25 @@ title: Toast 通知
 description: 显示短暂的状态消息
 ---
 
-import { ToastStory } from "@/components/stories/toast.story";
-
-<ToastStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/toast";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
 <div class="ore-toast" data-default-open aria-label="World saved">Saved</div>
 ```
 
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Toast } from "@oreui-web/react/toast";
-
-export function SavedMessage() {
-  return (
-    <Toast open aria-label="World saved">
-      Saved
-    </Toast>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Toast } from "@oreui-web/vue/toast";
-</script>
-
-<template>
-  <Toast open aria-label="World saved">Saved</Toast>
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Toast from "@oreui-web/svelte/toast";
-</script>
-
-<Toast open aria-label="World saved">Saved</Toast>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { showToast } from "oreui-web/toast";
-import { Button, Toast } from "@oreui-web/solid";
-
-export function SavedToast() {
-  let toast: HTMLDivElement | undefined;
-
-  return (
-    <>
-      <Button type="button" onClick={() => toast && showToast(toast)}>
-        Save
-      </Button>
-      <Toast
-        ref={(element) => {
-          toast = element;
-        }}
-      >
-        World saved
-      </Toast>
-    </>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<div class="ore-toast" data-default-open aria-label="World saved">Saved</div>
-
-<script>
-	import "oreui-web/toast";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
-
 ## 打开与关闭
 
 Toast 默认关闭。可使用 `data-default-open` 设置初始状态，使用 `data-open` 控制状态，或调用 `showToast()`、`closeToast()`。`oreui:openchange` 事件反映实际 Popover 状态变化。
 
 ```js
-import { closeToast, showToast } from "oreui-web/toast";
+import { closeToast, showToast } from "oreui-web";
 
 const toast = document.querySelector(".ore-toast");
 showToast(toast);
@@ -138,7 +54,7 @@ Toast 使用与 Tag 相同的背景变体：`neutral`、`secondary`、`primary`�
 ## 事件
 
 `oreui:openchange` 会在 Popover 状态变化时触发，`detail` 是新的 boolean 状态。
-对于 React，请使用 `onOpenChange`。
+请使用原生 `toggle` 事件。
 
 ## API
 

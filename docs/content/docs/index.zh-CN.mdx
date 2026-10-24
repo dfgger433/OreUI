@@ -1,12 +1,12 @@
 ---
 title: 简介
-description: 非官方 Ore UI 跨框架组件库
+description: 非官方 Ore UI Vanilla DOM 组件库
 icon: House
 ---
 
 OreUI 是一个非官方粉丝向的组件库，可将 Minecraft 的 Ore UI 设计系统应用到您的 Web 项目中。
 
-包含超过 25 个组件，共享一个与框架无关的 Web Component 核心，并对特定框架提供轻量适配。
+包含超过 25 个组件，为语义化 HTML 提供与框架无关的 DOM 行为和样式。
 
 <Cards>
   <Card icon={<Rocket />} title="快速开始" href="./getting-started">
@@ -22,21 +22,17 @@ OreUI 是一个非官方粉丝向的组件库，可将 Minecraft 的 Ore UI 设�
 
 ### 特性
 
-- **跨框架**：支持 Vanilla JavaScript、React、Vue 等
-- **CSS 优先**：专注视觉设计，仅使用少量 JavaScript
-- **精简核心**：Lit 是唯一的运行时依赖
+- **Vanilla 核心**：为普通 Web 文档和 Firefox 浏览器宿主提供与框架无关的 DOM API
+- **CSS 优先**：为语义化 HTML 提供 OreUI 样式和行为
+- **生命周期明确**：按宿主生命周期创建并销毁受管理的运行时
 - **自定义程度高**：使用 CSS 变量、TailwindCSS、PandaCSS 和 Props 进行自定义
 - **无障碍**：支持语义化 HTML、键盘操作、焦点管理和 ARIA
 
 ## 软件包
 
-| 软件包                                                                                                                                                   | 版本                                                                                                                         | 下载量                                                                                                                        | 链接                                                                                                                                      |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| <img src="/OreUI/frameworks/javascript.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `oreui-web`     | [![](https://img.shields.io/npm/v/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web)                     | [![](https://img.shields.io/npm/dm/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web)                     | [文档](https://katorly.dev/OreUI/zh-CN/docs/getting-started/vanilla) · [源码](https://github.com/katorlys/OreUI)                          |
-| <img src="/OreUI/frameworks/react.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `@oreui-web/react`   | [![](https://img.shields.io/npm/v/%40oreui-web%2Freact?style=flat-square)](https://www.npmjs.com/package/@oreui-web/react)   | [![](https://img.shields.io/npm/dm/%40oreui-web%2Freact?style=flat-square)](https://www.npmjs.com/package/@oreui-web/react)   | [文档](https://katorly.dev/OreUI/zh-CN/docs/getting-started/react) · [源码](https://github.com/katorlys/OreUI/tree/main/packages/react)   |
-| <img src="/OreUI/frameworks/vue.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `@oreui-web/vue`       | [![](https://img.shields.io/npm/v/%40oreui-web%2Fvue?style=flat-square)](https://www.npmjs.com/package/@oreui-web/vue)       | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fvue?style=flat-square)](https://www.npmjs.com/package/@oreui-web/vue)       | [文档](https://katorly.dev/OreUI/zh-CN/docs/getting-started/vue) · [源码](https://github.com/katorlys/OreUI/tree/main/packages/vue)       |
-| <img src="/OreUI/frameworks/svelte.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `@oreui-web/svelte` | [![](https://img.shields.io/npm/v/%40oreui-web%2Fsvelte?style=flat-square)](https://www.npmjs.com/package/@oreui-web/svelte) | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fsvelte?style=flat-square)](https://www.npmjs.com/package/@oreui-web/svelte) | [文档](https://katorly.dev/OreUI/zh-CN/docs/getting-started/svelte) · [源码](https://github.com/katorlys/OreUI/tree/main/packages/svelte) |
-| <img src="/OreUI/frameworks/solid.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `@oreui-web/solid`   | [![](https://img.shields.io/npm/v/%40oreui-web%2Fsolid?style=flat-square)](https://www.npmjs.com/package/@oreui-web/solid)   | [![](https://img.shields.io/npm/dm/%40oreui-web%2Fsolid?style=flat-square)](https://www.npmjs.com/package/@oreui-web/solid)   | [文档](https://katorly.dev/OreUI/zh-CN/docs/getting-started/solid) · [源码](https://github.com/katorlys/OreUI/tree/main/packages/solid)   |
+| 软件包                                                                                                                                               | 版本                                                                                                     | 下载量                                                                                                    | 链接                                                                                                             |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| <img src="/OreUI/frameworks/javascript.svg" alt="" width="16" height="16" className="not-prose inline-block size-4 align-text-bottom" /> `oreui-web` | [![](https://img.shields.io/npm/v/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web) | [![](https://img.shields.io/npm/dm/oreui-web?style=flat-square)](https://www.npmjs.com/package/oreui-web) | [文档](https://katorly.dev/OreUI/zh-CN/docs/getting-started/vanilla) · [源码](https://github.com/katorlys/OreUI) |
 
 ### Figma
 

@@ -3,14 +3,8 @@ title: Textarea 多行文本框
 description: 输入与编辑多行文本
 ---
 
-import { TextareaStory } from "@/components/stories/textarea.story";
-
-<TextareaStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -34,99 +28,6 @@ import "oreui-web/styles.css";
   >
 </div>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Textarea } from "@oreui-web/react/textarea";
-import { useRef, useState } from "react";
-
-export function WorldDescription() {
-  const [value, setValue] = useState("");
-  const ref = useRef<HTMLTextAreaElement>(null);
-
-  return (
-    <Textarea
-      ref={ref}
-      label="World description"
-      rows={4}
-      value={value}
-      onInput={(event) => setValue(event.currentTarget.value)}
-    />
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Textarea } from "@oreui-web/vue/textarea";
-
-const value = ref("");
-</script>
-
-<template>
-  <Textarea v-model="value" label="World description" :rows="4" />
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Textarea from "@oreui-web/svelte/textarea";
-
-  let value = $state("");
-</script>
-
-<Textarea bind:value label="World description" rows={4} />
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { createSignal } from "solid-js";
-import { Textarea } from "@oreui-web/solid/textarea";
-
-export function WorldDescription() {
-  const [value, setValue] = createSignal("");
-
-  return (
-    <Textarea
-      label="World description"
-      rows={4}
-      value={value()}
-      onValueChange={setValue}
-    />
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<div class="ore-textarea">
-  <label class="ore-textarea-label" for="world-description">World description</label>
-  <span class="ore-textarea-control">
-    <textarea class="ore-textarea-input" id="world-description" rows="4"></textarea>
-  </span>
-</div>
-
-<script>
-	import "oreui-web/styles.css";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## 调整高度
 

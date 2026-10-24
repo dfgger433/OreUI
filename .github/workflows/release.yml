@@ -35,18 +35,12 @@ jobs:
         id: version
         run: |
           node -e "
-            const versions = [
-              require('./package.json').version,
-              require('./packages/react/package.json').version,
-              require('./packages/vue/package.json').version,
-              require('./packages/svelte/package.json').version,
-              require('./packages/solid/package.json').version,
-            ];
-            const releaseVersion = process.env.GITHUB_EVENT_NAME === 'release'
+            const releaseVersion = require('./package.json').version;
+            const eventVersion = process.env.GITHUB_EVENT_NAME === 'release'
               ? process.env.GITHUB_REF_NAME.replace(/^v/, '')
-              : versions[0];
-            if (versions.some((version) => version !== releaseVersion)) {
-              throw new Error('Package versions must match release ' + process.env.GITHUB_REF_NAME + ': ' + versions.join(', '));
+              : releaseVersion;
+            if (eventVersion !== releaseVersion) {
+              throw new Error('Package version must match release ' + process.env.GITHUB_REF_NAME + ': ' + releaseVersion);
             }
             const requestedTag = process.env.NPM_TAG.trim();
             const npmTag = requestedTag || (releaseVersion.includes('-') ? 'beta' : 'latest');
@@ -62,26 +56,10 @@ jobs:
       - name: Build packages
         run: pnpm build
 
-      - name: Pack packages
+      - name: Pack package
         run: |
           mkdir packages-to-publish
           pnpm pack --pack-destination packages-to-publish
-          pnpm --dir packages/react pack --pack-destination "$GITHUB_WORKSPACE/packages-to-publish"
-          pnpm --dir packages/vue pack --pack-destination "$GITHUB_WORKSPACE/packages-to-publish"
-          pnpm --dir packages/svelte pack --pack-destination "$GITHUB_WORKSPACE/packages-to-publish"
-          pnpm --dir packages/solid pack --pack-destination "$GITHUB_WORKSPACE/packages-to-publish"
 
-      - name: Publish core package
+      - name: Publish package
         run: pnpm publish "$GITHUB_WORKSPACE/packages-to-publish/oreui-web-${{ steps.version.outputs.value }}.tgz" --access public --provenance --no-git-checks --ignore-scripts --tag "${{ steps.version.outputs.tag }}"
-
-      - name: Publish React package
-        run: pnpm publish "$GITHUB_WORKSPACE/packages-to-publish/oreui-web-react-${{ steps.version.outputs.value }}.tgz" --access public --provenance --no-git-checks --ignore-scripts --tag "${{ steps.version.outputs.tag }}"
-
-      - name: Publish Vue package
-        run: pnpm publish "$GITHUB_WORKSPACE/packages-to-publish/oreui-web-vue-${{ steps.version.outputs.value }}.tgz" --access public --provenance --no-git-checks --ignore-scripts --tag "${{ steps.version.outputs.tag }}"
-
-      - name: Publish Svelte package
-        run: pnpm publish "$GITHUB_WORKSPACE/packages-to-publish/oreui-web-svelte-${{ steps.version.outputs.value }}.tgz" --access public --provenance --no-git-checks --ignore-scripts --tag "${{ steps.version.outputs.tag }}"
-
-      - name: Publish Solid package
-        run: pnpm publish "$GITHUB_WORKSPACE/packages-to-publish/oreui-web-solid-${{ steps.version.outputs.value }}.tgz" --access public --provenance --no-git-checks --ignore-scripts --tag "${{ steps.version.outputs.tag }}"

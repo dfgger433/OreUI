@@ -3,20 +3,10 @@ title: Button 按钮
 description: 触发操作
 ---
 
-import {
-  ButtonAffixesPreview,
-  ButtonStory,
-  LinkButtonPreview,
-} from "@/components/stories/button.story";
-
 Button 用于确认选择、打开页面、提交表单等操作。
-
-<ButtonStory />
 
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
 import "oreui-web/styles.css";
 ```
@@ -24,63 +14,6 @@ import "oreui-web/styles.css";
 ```html
 <button class="ore-button" type="button">Create new world</button>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Button } from "@oreui-web/react/button";
-
-export function App() {
-  return <Button type="button">Create new world</Button>;
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Button } from "@oreui-web/vue/button";
-</script>
-
-<template>
-  <Button type="button">Create new world</Button>
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Button from "@oreui-web/svelte/button";
-</script>
-
-<Button type="button">Create new world</Button>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Button } from "@oreui-web/solid/button";
-
-export function App() {
-  return <Button type="button">Create new world</Button>;
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<button class="ore-button" type="button">Create new world</button>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## 变体
 
@@ -121,8 +54,6 @@ export function App() {
 
 使用公开的 `.ore-button-prefix` 和 `.ore-button-suffix` 类，在标签前后放置展示性元素。
 
-<ButtonAffixesPreview />
-
 ```html
 <button class="ore-button" type="button">
   <img class="ore-button-prefix" src="/icons/arrow-left.svg" alt="" />
@@ -139,12 +70,10 @@ export function App() {
 
 页面导航使用带 `class="ore-button"` 的原生锚点，并保留在新标签页打开、复制链接和下载资源等浏览器行为。
 
-<LinkButtonPreview />
-
 ```html
 <a
   class="ore-button"
-  href="https://example.com"
+  href="https://katorly.dev/OreUI/"
   target="_blank"
   rel="noreferrer"
 >

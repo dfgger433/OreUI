@@ -3,18 +3,15 @@ title: Tooltip
 description: Show short hint information.
 ---
 
-import { TooltipStory } from "@/components/stories/tooltip.story";
-
 Tooltip adds a short description to a hovered control.
-
-<TooltipStory />
 
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/tooltip";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
@@ -27,107 +24,9 @@ import "oreui-web/tooltip";
 </span>
 ```
 
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Button } from "@oreui-web/react/button";
-import { Tooltip } from "@oreui-web/react/tooltip";
-
-export function CopyWorld() {
-  return (
-    <Tooltip side="top">
-      <Button className="ore-tooltip-trigger" type="button">
-        Copy
-      </Button>
-      <div className="ore-tooltip-content">
-        Create a copy of this world
-        <span className="ore-tooltip-arrow" aria-hidden="true" />
-      </div>
-    </Tooltip>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { Button, Tooltip } from "@oreui-web/vue";
-</script>
-
-<template>
-  <Tooltip side="top">
-    <Button class="ore-tooltip-trigger" type="button">Copy</Button>
-    <div class="ore-tooltip-content">
-      Create a copy of this world
-      <span class="ore-tooltip-arrow" aria-hidden="true"></span>
-    </div>
-  </Tooltip>
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Button from "@oreui-web/svelte/button";
-  import Tooltip from "@oreui-web/svelte/tooltip";
-</script>
-
-<Tooltip side="top">
-  <Button class="ore-tooltip-trigger" type="button">Copy</Button>
-  <div class="ore-tooltip-content">
-    Create a copy of this world
-    <span class="ore-tooltip-arrow" aria-hidden="true"></span>
-  </div>
-</Tooltip>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Button, Tooltip } from "@oreui-web/solid";
-
-export function HelpTooltip() {
-  return (
-    <Tooltip side="top">
-      <Button class="ore-tooltip-trigger" type="button">
-        Help
-      </Button>
-      <span class="ore-tooltip-content">Open help</span>
-    </Tooltip>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<span class="ore-tooltip" data-side="top">
-  <button class="ore-tooltip-trigger" type="button">Copy</button>
-	<div class="ore-tooltip-content">
-		Create a copy of this world
-		<span class="ore-tooltip-arrow" aria-hidden="true"></span>
-	</div>
-</span>
-
-<script>
-	import "oreui-web/tooltip";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
-
 ## Placement
 
-Use `data-side="top"`, `"right"`, `"bottom"`, or `"left"` in native HTML. Framework wrappers expose the same setting through the `side` prop. Position updates while the page scrolls or resizes.
+Use `data-side="top"`, `"right"`, `"bottom"`, or `"left"` in native HTML. Set the same side with the `data-side` attribute. Position updates while the page scrolls or resizes.
 
 ## Delay
 
@@ -140,16 +39,16 @@ Use `data-side="top"`, `"right"`, `"bottom"`, or `"left"` in native HTML. Framew
 ## Events
 
 `oreui:openchange` fires after the open state changes. Its `detail` is the new boolean state.
-In React, use `onOpenChange`.
+Use the native `toggle` event.
 
 ## API
 
-| Framework prop | Native attribute    | Type                                     | Default |
-| -------------- | ------------------- | ---------------------------------------- | ------- |
-| `defaultOpen`  | `data-default-open` | `boolean`                                | `false` |
-| `delay`        | `data-delay`        | `number`                                 | `500`   |
-| `open`         | `data-open`         | `boolean`                                | unset   |
-| `side`         | `data-side`         | `"top" \| "right" \| "bottom" \| "left"` | `"top"` |
+| Native attribute    | Type                                     | Default |
+| ------------------- | ---------------------------------------- | ------- |
+| `data-default-open` | `boolean`                                | `false` |
+| `data-delay`        | `number`                                 | `500`   |
+| `data-open`         | `boolean`                                | unset   |
+| `data-side`         | `"top" \| "right" \| "bottom" \| "left"` | `"top"` |
 
 ## Public classes
 

@@ -6,9 +6,9 @@ icon: GitPullRequestArrow
 
 ## Development
 
-The core OreUI library uses Lit Web Components rendered to the Light DOM.
+The OreUI library is a Vanilla DOM core that enhances semantic HTML with CSS and explicit runtime behavior.
 
-Each component should be placed in `src/components/<name>/` and include `<name>.ts` and `<name>.css` files. The build tools scan these components automatically. Packages under `packages/` only provide adapters for different frameworks, while core component implementations should remain in `src/components/`.
+Each component should be placed in `src/components/<name>/` and include `<name>.ts` and `<name>.css` files. The build tools scan these components automatically. Keep component implementations in `src/components/`; the product does not publish framework adapter packages.
 
 ### Design guidelines
 
@@ -30,7 +30,7 @@ Each component should be placed in `src/components/<name>/` and include `<name>.
 
 ### Build
 
-The project uses pnpm for dependency management, and pnpm workspaces for the core and framework adapter packages.
+The project uses pnpm for dependency management, with the core package and documentation site in the workspace.
 
 Install dependencies:
 
@@ -72,14 +72,13 @@ The documentation site is based on [Fumadocs](https://fumadocs.dev) and uses Rea
 
 Each component's documentation should include the following when applicable:
 
-- Storybook
-- Usage examples
+- Vanilla usage examples
 - Properties, events, and methods
 - Component states and variants
 - API and CSS variables
 - Accessibility guidance
 
-Usage examples should cover all supported approaches, such as Vanilla, React, and Vue.
+Usage examples should use semantic HTML, the published stylesheet, and the Vanilla runtime API. Include Firefox browser-host considerations when they are relevant.
 
 English documentation is the original source. Other languages may use machine translation. Code examples do not need to be translated.
 

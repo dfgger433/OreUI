@@ -1,11 +1,6 @@
 packages:
   - "."
   - "docs"
-  - "packages/*"
-packageExtensions:
-  "@sveltejs/package@*":
-    dependencies:
-      typescript: "~5.9.0"
 allowBuilds:
   esbuild: true
   sharp: false

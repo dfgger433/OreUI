@@ -3,17 +3,13 @@ title: Modal 弹窗
 description: 在模态对话框中呈现内容
 ---
 
-import { ModalStory } from "@/components/stories/modal.story";
-
-<ModalStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
-
 ```js
-import "oreui-web/modal";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
@@ -72,97 +68,6 @@ import "oreui-web/modal";
   </form>
 </dialog>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Modal } from "@oreui-web/react/modal";
-import { useRef } from "react";
-
-export function FormModal() {
-  const modal = useRef<HTMLDialogElement>(null);
-  return (
-    <>
-      <button type="button" onClick={() => modal.current?.showModal()}>
-        Open modal
-      </button>
-      <Modal ref={modal} aria-labelledby="form-modal-title">
-        <form className="ore-modal-content" method="dialog">
-          ...
-        </form>
-      </Modal>
-    </>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Modal } from "@oreui-web/vue/modal";
-const modal = ref<HTMLDialogElement>();
-</script>
-<template>
-  <button type="button" @click="modal?.showModal()">Open modal</button>
-  <Modal ref="modal"
-    ><form class="ore-modal-content" method="dialog">...</form></Modal
-  >
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Modal from "@oreui-web/svelte/modal";
-  let modal: HTMLDialogElement;
-</script>
-<button type="button" onclick={() => modal.showModal()}>Open modal</button>
-<Modal bind:this={modal}><form class="ore-modal-content" method="dialog">...</form></Modal>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { Modal } from "@oreui-web/solid/modal";
-
-export function FormModal() {
-  let modal: HTMLDialogElement | undefined;
-  return (
-    <>
-      <button type="button" onClick={() => modal?.showModal()}>
-        Open modal
-      </button>
-      <Modal ref={modal}>
-        <form class="ore-modal-content" method="dialog">
-          ...
-        </form>
-      </Modal>
-    </>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<button type="button" data-modal-target="form-modal">Open modal</button>
-<dialog class="ore-modal" id="form-modal">
-  <form class="ore-modal-content" method="dialog">...</form>
-</dialog>
-<script>import "oreui-web/modal";</script>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## 打开和关闭
 

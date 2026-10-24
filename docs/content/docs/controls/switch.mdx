@@ -3,14 +3,8 @@ title: Switch
 description: Turn on or off.
 ---
 
-import { SwitchStory } from "@/components/stories/switch.story";
-
-<SwitchStory />
-
 ## Usage
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```html
 <label>
   <input
@@ -24,109 +18,6 @@ import { SwitchStory } from "@/components/stories/switch.story";
   Enable autosave
 </label>
 ```
-
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Switch } from "@oreui-web/react/switch";
-import { useState } from "react";
-
-export function AutosaveSwitch() {
-  const [checked, setChecked] = useState(false);
-
-  return (
-    <Switch
-      checked={checked}
-      name="autosave"
-      value="enabled"
-      variant="icons"
-      onChange={(event) => {
-        setChecked(event.currentTarget.checked);
-      }}
-    >
-      Enable autosave
-    </Switch>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Switch } from "@oreui-web/vue/switch";
-
-const checked = ref(false);
-</script>
-
-<template>
-  <Switch v-model="checked" name="autosave" value="enabled" variant="icons">
-    Enable autosave
-  </Switch>
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Switch from "@oreui-web/svelte/switch";
-
-  let checked = $state(false);
-</script>
-
-<Switch bind:checked name="autosave" value="enabled" variant="icons">
-  Enable autosave
-</Switch>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { createSignal } from "solid-js";
-import { Switch } from "@oreui-web/solid/switch";
-
-export function AutosaveSwitch() {
-  const [checked, setChecked] = createSignal(false);
-
-  return (
-    <Switch
-      checked={checked()}
-      onCheckedChange={setChecked}
-      name="autosave"
-      value="enabled"
-      variant="icons"
-    >
-      Enable autosave
-    </Switch>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<label>
-  <input
-    type="checkbox"
-    role="switch"
-    name="autosave"
-    value="enabled"
-    data-variant="icons"
-  />
-  Enable autosave
-</label>
-```
-
-    </Tab>
-
-</Tabs>
 
 ## Variants
 

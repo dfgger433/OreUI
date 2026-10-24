@@ -8,21 +8,27 @@ export interface OreTableSortDetail {
 }
 
 const tableSelector = ".ore-table > table";
-const initializedTables = new WeakSet<OreTableElement>();
+interface TableState {
+  handleClick: (event: MouseEvent) => void;
+  initialized: string | null;
+  sortAttributes: Map<HTMLTableCellElement, string | null>;
+}
+const states = new WeakMap<OreTableElement, TableState>();
 
 function initTable(table: OreTableElement): void {
-  if (initializedTables.has(table)) {
+  if (states.has(table)) {
     return;
   }
 
-  initializedTables.add(table);
-  table.dataset.oreInitialized = "table";
-  table.addEventListener("click", (event) => {
-    if (!(event.target instanceof Element)) {
+  const handleClick = (event: MouseEvent): void => {
+    const target = event.target;
+    if (!target || (target as Node).nodeType !== 1) {
       return;
     }
 
-    const button = event.target.closest<HTMLButtonElement>(".ore-table-sort");
+    const button = (target as Element).closest<HTMLButtonElement>(
+      ".ore-table-sort",
+    );
     const header = button?.closest<HTMLTableCellElement>("th");
 
     if (!button || !header || button.disabled || !table.contains(button)) {
@@ -42,37 +48,79 @@ function initTable(table: OreTableElement): void {
     }
     header.setAttribute("aria-sort", direction);
 
-    table.dispatchEvent(
-      new CustomEvent<OreTableSortDetail>("sort", {
-        bubbles: true,
-        detail: { column: button.value, direction },
-      }),
-    );
+    const CustomEventConstructor = table.ownerDocument.defaultView?.CustomEvent;
+    if (CustomEventConstructor) {
+      table.dispatchEvent(
+        new CustomEventConstructor<OreTableSortDetail>("sort", {
+          bubbles: true,
+          detail: { column: button.value, direction },
+        }),
+      );
+    }
+  };
+
+  states.set(table, {
+    handleClick,
+    initialized: table.getAttribute("data-ore-initialized"),
+    sortAttributes: new Map(
+      [...table.querySelectorAll<HTMLTableCellElement>("th")].map((cell) => [
+        cell,
+        cell.getAttribute("aria-sort"),
+      ]),
+    ),
   });
+  table.dataset.oreInitialized = "table";
+  table.addEventListener("click", handleClick);
+}
+
+export function destroyTable(table: OreTableElement): void {
+  const state = states.get(table);
+  if (!state) {
+    return;
+  }
+
+  table.removeEventListener("click", state.handleClick);
+  for (const [cell, value] of state.sortAttributes) {
+    if (value === null) {
+      cell.removeAttribute("aria-sort");
+    } else {
+      cell.setAttribute("aria-sort", value);
+    }
+  }
+  if (state.initialized === null) {
+    table.removeAttribute("data-ore-initialized");
+  } else {
+    table.setAttribute("data-ore-initialized", state.initialized);
+  }
+  states.delete(table);
 }
 
 export { initTable };
 
-export function initTables(root: ParentNode = document): void {
-  if (root instanceof HTMLTableElement && root.matches(tableSelector)) {
-    initTable(root);
+export function destroyTables(root: ParentNode): void {
+  if (
+    (root as Node).nodeType === 1 &&
+    (root as Element).localName === "table" &&
+    (root as Element).matches(tableSelector)
+  ) {
+    destroyTable(root as OreTableElement);
+  }
+
+  for (const table of root.querySelectorAll<OreTableElement>(tableSelector)) {
+    destroyTable(table);
+  }
+}
+
+export function initTables(root: ParentNode): void {
+  if (
+    (root as Node).nodeType === 1 &&
+    (root as Element).localName === "table" &&
+    (root as Element).matches(tableSelector)
+  ) {
+    initTable(root as OreTableElement);
   }
 
   for (const table of root.querySelectorAll<OreTableElement>(tableSelector)) {
     initTable(table);
   }
-}
-
-if (typeof document !== "undefined") {
-  initTables();
-
-  new MutationObserver((records) => {
-    for (const record of records) {
-      for (const node of record.addedNodes) {
-        if (node instanceof HTMLElement) {
-          initTables(node);
-        }
-      }
-    }
-  }).observe(document.documentElement, { childList: true, subtree: true });
 }

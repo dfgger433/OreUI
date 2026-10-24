@@ -6,9 +6,9 @@ icon: GitPullRequestArrow
 
 ## 开发
 
-OreUI 组件库核心使用 Lit Web Components，并渲染到 Light DOM。
+OreUI 是一个 Vanilla DOM 核心，通过 CSS 和显式运行时行为增强语义化 HTML。
 
-每个组件都应放在 `src/components/<name>/` 下，并包含 `<name>.ts` 与 `<name>.css` 文件。构建工具会自动扫描这些组件。`packages/` 下的包只负责适配不同框架，组件的核心实现应保留在 `src/components/` 中。
+每个组件都应放在 `src/components/<name>/` 下，并包含 `<name>.ts` 与 `<name>.css` 文件。构建工具会自动扫描这些组件。组件实现应保留在 `src/components/` 中；产品不发布框架适配包。
 
 ### 设计规范
 
@@ -30,7 +30,7 @@ OreUI 组件库核心使用 Lit Web Components，并渲染到 Light DOM。
 
 ### 构建
 
-项目使用 pnpm 管理依赖，并通过 pnpm workspace 管理核心包和框架适配包。
+项目使用 pnpm 管理依赖，workspace 包含核心包和文档站点。
 
 安装：
 
@@ -72,14 +72,13 @@ pnpm format
 
 每个组件的文档应包含（若有）：
 
-- Storybook
-- 使用示例
+- Vanilla 使用示例
 - 属性、事件和方法
 - 组件的状态和变体
 - API 和 CSS 变量
 - 无障碍说明
 
-使用示例应覆盖项目支持的全部用法，例如 Vanilla、React、Vue 等。
+使用示例应使用语义化 HTML、已发布的样式表和 Vanilla 运行时 API；涉及 Firefox 宿主时，请补充相关说明。
 
 文档以英文内容为准，其他语言可以借助机器翻译。示例代码不需要翻译。
 

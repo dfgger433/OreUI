@@ -3,16 +3,13 @@ title: Dropdown 下拉菜单
 description: 从菜单中选择一个选项
 ---
 
-import { DropdownStory } from "@/components/stories/dropdown.story";
-
-<DropdownStory />
-
 ## 用法
 
-<Tabs groupId="framework" items={["Vanilla", "React", "Vue", "Svelte", "Solid", "Astro"]} persist>
-	<Tab value="Vanilla">
 ```js
-import "oreui-web/dropdown";
+import { createOreUIRuntime } from "oreui-web/runtime";
+
+const runtime = createOreUIRuntime(document);
+runtime.init();
 ```
 
 ```html
@@ -46,169 +43,6 @@ import "oreui-web/dropdown";
 </div>
 ```
 
-    </Tab>
-    <Tab value="React">
-
-```tsx
-import { Button } from "@oreui-web/react/button";
-import { Dropdown } from "@oreui-web/react/dropdown";
-import { useState } from "react";
-
-export function GameModeDropdown() {
-  const [value, setValue] = useState("creative");
-
-  return (
-    <Dropdown
-      value={value}
-      variant="bordered"
-      onChange={(event) => setValue(event.detail.value)}
-    >
-      <Button className="ore-dropdown-trigger" type="button" color="secondary">
-        <span className="ore-dropdown-trigger-label">Game mode</span>
-      </Button>
-      <div className="ore-dropdown-menu">
-        <button
-          className="ore-dropdown-item"
-          type="button"
-          data-value="survival"
-        >
-          Survival
-        </button>
-        <button
-          className="ore-dropdown-item"
-          type="button"
-          data-value="creative"
-        >
-          Creative
-        </button>
-        <button
-          className="ore-dropdown-item"
-          type="button"
-          data-value="adventure"
-        >
-          Adventure
-        </button>
-      </div>
-    </Dropdown>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Vue">
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import { Button, Dropdown } from "@oreui-web/vue";
-const value = ref("creative");
-</script>
-
-<template>
-  <Dropdown v-model="value" variant="bordered">
-    <Button class="ore-dropdown-trigger" type="button" color="secondary">
-      <span class="ore-dropdown-trigger-label">Game mode</span>
-    </Button>
-    <div class="ore-dropdown-menu">
-      <button class="ore-dropdown-item" type="button" data-value="survival">
-        Survival</button
-      ><button class="ore-dropdown-item" type="button" data-value="creative">
-        Creative
-      </button>
-      <button class="ore-dropdown-item" type="button" data-value="adventure">
-        Adventure
-      </button>
-      <button
-        class="ore-dropdown-item"
-        type="button"
-        data-value="spectator"
-        disabled
-      >
-        Spectator
-      </button>
-    </div>
-  </Dropdown>
-</template>
-```
-
-    </Tab>
-    <Tab value="Svelte">
-
-```svelte
-<script lang="ts">
-  import Button from "@oreui-web/svelte/button";
-  import Dropdown from "@oreui-web/svelte/dropdown";
-
-  let value = $state("creative");
-</script>
-
-<Dropdown bind:value variant="bordered">
-  <Button class="ore-dropdown-trigger" type="button" color="secondary">
-    <span class="ore-dropdown-trigger-label">Game mode</span>
-  </Button>
-  <div class="ore-dropdown-menu">
-    <button class="ore-dropdown-item" type="button" data-value="survival">Survival</button>
-    <button class="ore-dropdown-item" type="button" data-value="creative">Creative</button>
-    <button class="ore-dropdown-item" type="button" data-value="adventure">Adventure</button>
-  </div>
-</Dropdown>
-```
-
-    </Tab>
-    <Tab value="Solid">
-
-```tsx
-import { createSignal } from "solid-js";
-import { Button, Dropdown } from "@oreui-web/solid";
-
-export function GameModeDropdown() {
-  const [value, setValue] = createSignal("creative");
-
-  return (
-    <Dropdown value={value()} onValueChange={setValue} variant="bordered">
-      <Button class="ore-dropdown-trigger" type="button" color="secondary">
-        <span class="ore-dropdown-trigger-label">Game mode</span>
-      </Button>
-      <div class="ore-dropdown-menu">
-        <button class="ore-dropdown-item" type="button" data-value="survival">
-          Survival
-        </button>
-        <button class="ore-dropdown-item" type="button" data-value="creative">
-          Creative
-        </button>
-        <button class="ore-dropdown-item" type="button" data-value="adventure">
-          Adventure
-        </button>
-      </div>
-    </Dropdown>
-  );
-}
-```
-
-    </Tab>
-    <Tab value="Astro">
-
-```astro
-<div class="ore-dropdown" data-variant="bordered" data-value="creative">
-  <button class="ore-button ore-dropdown-trigger" type="button" data-color="secondary">
-		<span class="ore-dropdown-trigger-label">Game mode</span>
-  </button>
-	<div class="ore-dropdown-menu">
-		<button class="ore-dropdown-item" type="button" data-value="survival">Survival</button>
-		<button class="ore-dropdown-item" type="button" data-value="creative">Creative</button>
-		<button class="ore-dropdown-item" type="button" data-value="adventure">Adventure</button>
-	</div>
-</div>
-
-<script>
-	import "oreui-web/dropdown";
-</script>
-```
-
-    </Tab>
-
-</Tabs>
-
 ## 变体
 
 `borderless` 只在交互时才显示选项边框，而 `bordered` 会始终显示边框。
@@ -220,7 +54,7 @@ export function GameModeDropdown() {
 | `change` | `{ item: HTMLButtonElement; value: string }` |
 | `toggle` | 菜单派发的标准 Popover 事件                  |
 
-对于 React，请使用 `onChange`。需要打开状态时，在菜单上监听 `toggle`。
+请使用原生 `change` 事件；需要打开状态时，在菜单上监听 `toggle`。
 
 ## API
 
